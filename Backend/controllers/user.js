@@ -9,22 +9,23 @@ const dbConnect = require("../utils/dbConnect");
 dbConnect();
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, code} = req.body;
-
-  //TODO - improve how this code is created
-  const senha = "81377662Aa@?/";
+  const { name, email, password, code } = req.body;
 
   if (!name || !email || !password || !code) {
     return res.status(400).json({ msg: "Please enter all fields" });
   }
 
+  const senha = await Code.findOne({ code });
+
+//TODO - handle error when code is not found on the db
+    if (code !== senha.code) {
+      return res.status(400).json({ msg: "user's code unavailable" });
+    }
+
+
   const findUser = await User.findOne({ email });
   if (findUser) {
     return res.status(400).json({ msg: "there's an account on this email" });
-  }
-
-  if (code !== senha) {
-    return res.status(400).json({ msg: "user's code unavailable" });
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -76,23 +77,45 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-const createCodeAdmin = asyncHandler(async (req, res) => {
+const AdminCreateCode = asyncHandler(async (req, res) => {
   const code = new Code(req.body);
-  const user = User.findById(req.body.userID);
+  const user = await User.findById(req.body.userId);
 
-
+  if (user.isAdmin === true) {
     try {
       const savedCode = await code.save();
-      if(user.isAdmin == true) {
-          res.status(200).json(savedCode);
-      } else {
-      res.status(400).json('error');
-      }
+      res.status(200).json(savedCode);
     } catch (error) {
       res.status(400).json(error.message);
     }
-
+  } else {
+    res.status(400).json({ msg: "user is not an admin" });
+  }
 });
+
+const createAdmin = asyncHandler(async (req, res) => {
+  const currentUser = await User.findById(req.params.id);
+  const client = await User.findById(req.body.userId);
+
+  try {
+    if (currentUser.isAdmin === true) {
+      if (client.isAdmin === false) {
+        await client.updateOne({ $set: { isAdmin: true } });
+        res.status(200).json(client);
+      } else {
+        await client.updateOne({ $set: { isAdmin: false } });
+        res.status(200).json(client);
+      }
+    } else {
+      res.status(400).json({ msg: "user is not an admin" });
+    }
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//TODO - find all admins
+//TODO - set schedule availability
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT__SECRET, {
@@ -103,5 +126,6 @@ const generateToken = (id) => {
 module.exports = {
   registerUser,
   loginUser,
-  createCodeAdmin,
+  AdminCreateCode,
+  createAdmin,
 };
