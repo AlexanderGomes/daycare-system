@@ -17,15 +17,14 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const senha = await Code.findOne({ code });
 
-//TODO - handle error when code is not found on the db
-    if (code !== senha.code) {
-      return res.status(400).json({ msg: "user's code unavailable" });
-    }
-
-
   const findUser = await User.findOne({ email });
   if (findUser) {
     return res.status(400).json({ msg: "there's an account on this email" });
+  }
+
+  //TODO - handle error when code is not found on the db
+  if (code !== senha.code) {
+    return res.status(400).json({ msg: "user's code unavailable" });
   }
 
   const salt = await bcrypt.genSalt(10);
