@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import { Calendar } from "../";
+import "./Feed.css";
 
 const Feed = () => {
+  
   return (
-    <div>Feed</div>
-  )
-}
+    <div className="feed__main">
+      <Calendar />
+    </div>
+  );
+};
 
-export default Feed
+export default Feed;
