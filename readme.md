@@ -1,6 +1,6 @@
 ## TODO ON THE NEXT SHIT
 
-- admin set schedule avaiability \\ not done \\
+- admin set schedule avaiability \\ done \\
 
 - check in user when dropping off the kid, the time they were checked in and checked out \\ not done \\
 

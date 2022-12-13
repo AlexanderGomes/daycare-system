@@ -74,7 +74,7 @@ const Register = () => {
       navigate("/feed");
     }
 
-    console.log(message);
+
     dispatch(reset());
   }, [user, isError, isSuccess, message, formik]);
 

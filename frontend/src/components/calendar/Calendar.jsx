@@ -14,7 +14,7 @@ const Calendar = () => {
     },
   ]);
 
-  console.log(date)
+
 
   return (
     <div className="calendar__main">

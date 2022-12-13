@@ -113,8 +113,7 @@ const createAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-//TODO - find all admins
-//TODO - set schedule availability
+
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT__SECRET, {
