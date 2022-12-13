@@ -7,7 +7,6 @@ const scheduleSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    
     start: {
       type: Date,
       required: [true, "Start date is required"],
