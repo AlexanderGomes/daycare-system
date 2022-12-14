@@ -1,0 +1,36 @@
+/* main divs */
+.calendar__main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  max-height: 40vh;
+}
+
+.calendar__color {
+    height: 100vh;
+    /* background-color: rgb(247, 235, 235); */
+}
+
+.calendar__move {
+margin-top: 240px;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+}
+
+/* range */
+.calendar__range {
+  margin-bottom: 20px;
+  background-color: rgba(240, 248, 255, 0.933);
+  border-radius: 12px;
+  width: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 25px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  font-weight: 600;
+}
+

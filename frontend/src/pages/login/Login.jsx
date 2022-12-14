@@ -59,7 +59,7 @@ const Login = () => {
       setWrongEmail(true);
     }
     if (isSuccess || user) {
-      navigate("/feed");
+      navigate("/calendar");
     }
 
     dispatch(reset());

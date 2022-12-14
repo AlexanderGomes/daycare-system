@@ -1,0 +1,25 @@
+/* main divs */
+.navbar__main {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: rgba(240, 248, 255, 0.933);
+    align-items: center;
+}
+
+
+/* slogan */
+.navbar__slogan {
+    color: rgb(180, 180, 67);
+    font-size: 23px;
+}
+
+/* icons */
+.navbar__icons__ul {
+    display: flex;
+    text-decoration: none;
+    list-style: none;
+    gap: 20px;
+}
+
+

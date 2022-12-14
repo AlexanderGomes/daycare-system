@@ -71,7 +71,7 @@ const Register = () => {
       setWrongCode(true);
     }
     if (isSuccess || user) {
-      navigate("/feed");
+      navigate("/calendar");
     }
 
 

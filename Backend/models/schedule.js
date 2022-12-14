@@ -14,6 +14,9 @@ const scheduleSchema = mongoose.Schema(
     end: {
       type: Date,
     },
+    isPaid: {
+      type: Boolean,
+    },
   },
   { timestamps: true }
 );

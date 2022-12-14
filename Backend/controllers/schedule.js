@@ -20,7 +20,9 @@ const createSchedule = asyncHandler(async (req, res) => {
 
   previousSchedule?.map((p) => {
     compareStartValues = p.start.toString() === newSchedule.start.toString();
-    compareEndValues = p.end.toString() === newSchedule.end.toString();
+    compareEndValues = p?.end?.toString() === newSchedule?.end?.toString();
+
+
     if (compareStartValues || compareEndValues === true) {
       isTaken = true;
     }
@@ -123,27 +125,25 @@ const checkInUser = asyncHandler(async (req, res) => {
   }
 });
 
+
 //high risk function
-
-//update the end time of the checkin document
 const checkOutUser = asyncHandler(async (req, res) => {
-  const lastCheckedInTime = await CheckIn.findOne({
-    clientId: req.body.clientId,
-  })
-    .sort({ _id: -1 })
-    .limit(1);
-
   const adminUser = await User.findById(req.body.userId);
 
   try {
-    if (adminUser) {
-      await lastCheckedInTime.updateOne({ $set: { end: req.body.end } });
+    if (adminUser.isAdmin) {
+      const lastCheckedInTime = await CheckIn.findOneAndUpdate(
+        { clientId: req.body.clientId },
+        { $set: { end: req.body.end } },
+        { new: true }
+      ).sort({ _id: -1 }); // getting the last document
       res.status(200).json(lastCheckedInTime);
     }
   } catch (error) {
     res.status(400).json(error.message);
   }
 });
+
 
 module.exports = {
   createSchedule,

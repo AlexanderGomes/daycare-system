@@ -1,6 +1,6 @@
 import React from "react";
-import { Welcome, Register, Login } from "./pages";
-import { Feed } from "./components";
+import { Welcome, Register, Login, Calendar } from "./pages";
+import { Navbar } from "./components";
 import "./App.css";
 import { useSelector } from "react-redux";
 import {
@@ -12,19 +12,21 @@ import {
 
 function App() {
   const { user } = useSelector((state) => state.auth);
+
   return (
     <>
       <Router>
+        <Navbar />
         <Routes>
           <Route path="/" element={<Welcome />} />
-          <Route path="/feed" element={user ? <Feed /> : <Login />} />
+          <Route path="/calendar" element={user ? <Calendar /> : <Login />} />
           <Route
             path="/auth/login"
-            element={user ? <Navigate to={"/feed"} /> : <Login />}
+            element={user ? <Navigate to={"/calendar"} /> : <Login />}
           />
           <Route
             path="/auth/register"
-            element={user ? <Navigate to={"/feed"} /> : <Register />}
+            element={user ? <Navigate to={"/calendar"} /> : <Register />}
           />
         </Routes>
       </Router>
