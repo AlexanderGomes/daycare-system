@@ -79,7 +79,7 @@ const Calendar = () => {
         <div className="calendar__popup__color">
           <div className="calendar__popup__main">
             <p className="calendar__p">are you sure about the schedule?</p>
-            <p className="calendar__p" ><span className="calendar__disclaimer"> Disclaimer: </span> you can't change your schedule after
+            <p className="calendar__p greyish" ><span className="calendar__disclaimer"> Disclaimer: </span> you can't change your schedule after
               being checked-in and the payment for the day is required.
             </p>
             <div className="calendar__btns">
