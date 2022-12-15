@@ -8,16 +8,16 @@
 }
 
 .calendar__color {
-    height: 100vh;
-    /* background-color: rgb(247, 235, 235); */
+  /* height: 100vh; */
+  /* background-color: rgb(247, 235, 235); */
 }
 
 .calendar__move {
-margin-top: 240px;
-display: flex;
-justify-content: center;
-align-items: center;
-flex-direction: column;
+  margin-top: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 /* range */
@@ -34,3 +34,63 @@ flex-direction: column;
   font-weight: 600;
 }
 
+/* popup */
+
+.calendar__popup__main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  min-height: 200px;
+  background-color: aliceblue;
+  min-width: 400px;
+  border-radius: 12px;
+  padding: 10px;
+}
+
+.calendar__popup__color {
+  position: absolute;
+  backdrop-filter: blur(4px);
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+
+.calendar__btns {
+ display: flex;
+ gap: 20px;
+}
+
+.confirm__btn {
+  height: 30px;
+  width: 50px;
+  border-radius: 12px;
+  background-color: rgb(10, 178, 10);
+  color: white;
+  cursor: pointer;
+}
+
+.refuse__btn {
+  height: 30px;
+  width: 50px;
+  border-radius: 12px;
+  background-color: rgb(246, 73, 73);
+  color: white;
+  cursor: pointer;
+}
+
+.calendar__disclaimer {
+  color: rgb(250, 0, 0);
+}
+
+.calendar__p {
+  text-transform: capitalize;
+  font-weight: 600;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

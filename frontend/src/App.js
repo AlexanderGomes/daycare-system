@@ -16,7 +16,7 @@ function App() {
   return (
     <>
       <Router>
-        <Navbar />
+        {user && <Navbar />}
         <Routes>
           <Route path="/" element={<Welcome />} />
           <Route path="/calendar" element={user ? <Calendar /> : <Login />} />

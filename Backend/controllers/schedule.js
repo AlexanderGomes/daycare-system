@@ -22,7 +22,6 @@ const createSchedule = asyncHandler(async (req, res) => {
     compareStartValues = p.start.toString() === newSchedule.start.toString();
     compareEndValues = p?.end?.toString() === newSchedule?.end?.toString();
 
-
     if (compareStartValues || compareEndValues === true) {
       isTaken = true;
     }
@@ -125,7 +124,6 @@ const checkInUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 //high risk function
 const checkOutUser = asyncHandler(async (req, res) => {
   const adminUser = await User.findById(req.body.userId);
@@ -143,7 +141,6 @@ const checkOutUser = asyncHandler(async (req, res) => {
     res.status(400).json(error.message);
   }
 });
-
 
 module.exports = {
   createSchedule,
