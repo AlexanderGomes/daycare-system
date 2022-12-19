@@ -14,8 +14,15 @@ const scheduleSchema = mongoose.Schema(
     end: {
       type: Date,
     },
+    days: {
+      type: Number,
+    },
+    price: {
+      type: Number,
+    },
     isPaid: {
       type: Boolean,
+      default: false
     },
   },
   { timestamps: true }

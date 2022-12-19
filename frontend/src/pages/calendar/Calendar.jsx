@@ -3,15 +3,17 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import "./Calendar.css";
+
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-//TODO- ask for confirmation when creating a schedule
+
 const Calendar = () => {
   const [popUp, setPopUp] = useState(false);
   const [conf, setConf] = useState(false);
+
   const [date, setDate] = useState([
     {
       startDate: new Date(),
@@ -20,7 +22,14 @@ const Calendar = () => {
     },
   ]);
 
-  console.log(date);
+  const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
+  function dayDifference(date1, date2) {
+    const timeDiff = Math.abs(date2?.getTime() - date1?.getTime());
+    const diffDays = Math.ceil(timeDiff / MILLISECONDS_PER_DAY);
+    return diffDays;
+  }
+
+  const days = dayDifference(date[0].endDate, date[0].startDate);
 
   const takenScheduleMessage = "Request failed with status code 400";
   const { user } = useSelector((state) => state.auth);
@@ -30,19 +39,23 @@ const Calendar = () => {
   // selecting just the current day allow you to spam it as much as you want, selecting the current day plus another one won't cause problems
   // it's only the current day that is causing problems
 
-  const createSchedule = async () => {
+  const CreateSchedule = async () => {
     try {
       if (date[0].startDate === date[0].endDate) {
         await axios.post("/api/schedule", {
           userId: user._id,
           start: date[0].startDate,
           end: date[0].startDate,
+          days: 1,
+          price: 35,
         });
       } else {
         await axios.post("/api/schedule", {
           userId: user._id,
           start: date[0].startDate,
           end: date[0].endDate,
+          days: days,
+          price: 35 * days,
         });
       }
       toast.success("Schedule Created", {
@@ -50,7 +63,7 @@ const Calendar = () => {
       });
       setTimeout(function () {
         window.location.reload();
-      }, 1000);
+      }, 3000);
     } catch (error) {
       if (error.message === takenScheduleMessage) {
         toast.error("Schedule is Taken by You", {
@@ -64,7 +77,7 @@ const Calendar = () => {
   const confirm = () => {
     setConf(true);
     if (conf === true) {
-      createSchedule();
+      CreateSchedule();
     }
   };
 
@@ -72,15 +85,17 @@ const Calendar = () => {
     setConf(!false);
   }, [conf]);
 
-  console.log(conf);
   return (
     <div className="calendar__color">
       {popUp === true ? (
         <div className="calendar__popup__color">
           <div className="calendar__popup__main">
             <p className="calendar__p">are you sure about the schedule?</p>
-            <p className="calendar__p greyish" ><span className="calendar__disclaimer"> Disclaimer: </span> you can't change your schedule after
-              being checked-in and the payment for the day is required.
+            <p className="calendar__p greyish">
+              <span className="calendar__disclaimer"> Disclaimer: </span> you
+              can't change your schedule after being checked-in, the payment for
+              the day will be required after so. You get charged $35 per day
+              that you get checked-in by one of our employees.
             </p>
             <div className="calendar__btns">
               <button className="confirm__btn" onClick={confirm}>

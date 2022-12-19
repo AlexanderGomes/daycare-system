@@ -142,9 +142,20 @@ const checkOutUser = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllSchedule = asyncHandler(async (req, res) => {
+  const userSchedule = await Schedule.find({ userId: req.params.userId });
+
+  try {
+    res.status(200).json(userSchedule);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
 module.exports = {
   createSchedule,
   unavailableDates,
   checkInUser,
   checkOutUser,
+  getAllSchedule,
 };

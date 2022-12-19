@@ -1,5 +1,5 @@
 import React from "react";
-import { Welcome, Register, Login, Calendar } from "./pages";
+import { Welcome, Register, Login, Calendar, History } from "./pages";
 import { Navbar } from "./components";
 import "./App.css";
 import { useSelector } from "react-redux";
@@ -28,6 +28,7 @@ function App() {
             path="/auth/register"
             element={user ? <Navigate to={"/calendar"} /> : <Register />}
           />
+          <Route path="/schedules" element={user ? <History /> : <Login />} />
         </Routes>
       </Router>
     </>

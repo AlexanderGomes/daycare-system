@@ -23,7 +23,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to={"/"}>
+            <Link to={"/schedules"}>
               <span className="navbar__history">
                 <BsClockHistory color="black" size={25} />
               </span>

@@ -1,0 +1,73 @@
+/* main css */
+.history__main {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+
+/* nav css */
+
+.history__navbar {
+  display: flex;
+  gap: 30px;
+}
+
+.history__nav {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-weight: 600;
+  background-color: rgb(106, 167, 221);
+  width: 130px;
+  display: flex;
+  justify-content: center;
+  border-radius: 12px;
+  height: 20px;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.history__list {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 40px;
+  gap: 20px;
+  width: 100%;
+}
+
+.history__noSchedule {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.history__no {
+  font-weight: 600;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-size: 24px;
+  color: rgb(106, 167, 221);
+}
+
+.history__img {
+  width: 350px;
+}
+
+.history__nav__on {
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-weight: 600;
+  background-color: rgb(106, 167, 221);
+  width: 130px;
+  display: flex;
+  justify-content: center;
+  border-radius: 12px;
+  height: 20px;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  border-bottom: 5px solid rgb(247, 151, 151);
+}
+

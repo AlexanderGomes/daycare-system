@@ -1,0 +1,32 @@
+.list__main {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  background-color: rgb(214, 214, 214);
+  width: 200px;
+  border-radius: 12px;
+  min-height: 50px;
+  padding: 5px;
+}
+
+.list__info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.list__dates {
+  font-weight: 600;
+}
+
+.from {
+  color: red;
+  font-weight: 600;
+}
+
+.to {
+  color: teal;
+  font-weight: 600;
+}
