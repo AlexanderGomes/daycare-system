@@ -1,6 +1,6 @@
 import React from "react";
-import { Welcome, Register, Login, Calendar, History } from "./pages";
-import { Navbar} from "./components";
+import { Welcome, Register, Login, Calendar, History, Checkout, Success } from "./pages";
+import { Navbar } from "./components";
 import "./App.css";
 import { useSelector } from "react-redux";
 import {
@@ -18,7 +18,9 @@ function App() {
       <Router>
         {user && <Navbar />}
         <Routes>
-          <Route path="/" element={user ? <Calendar/> : <Welcome />} />
+          <Route path="/" element={user ? <Calendar /> : <Welcome />} />
+          <Route path="/checkout" element={ user ? <Checkout /> : <Login />} />
+          <Route path="/checkout/success" element={ <Success />} />
           <Route path="/calendar" element={user ? <Calendar /> : <Login />} />
           <Route
             path="/auth/login"

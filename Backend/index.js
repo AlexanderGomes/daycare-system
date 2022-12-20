@@ -1,11 +1,12 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
+require("dotenv").config();
 const port = process.env.PORT || 5000;
 const dbConnect = require("./utils/dbConnect");
 
 //folders
 const userRoutes = require("./routes/user");
 const scheduleRoutes = require("./routes/schedule");
+const stripe = require('./routes/stripe')
 
 //activating
 const app = express();
@@ -17,6 +18,8 @@ app.use(express.urlencoded({ extended: false }));
 //routes
 app.use("/api/user", userRoutes);
 app.use("/api/schedule", scheduleRoutes);
+app.use("/api/payment", stripe);
+
 
 
 app.listen(port, async () => {

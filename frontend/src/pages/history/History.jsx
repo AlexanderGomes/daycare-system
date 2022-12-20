@@ -10,10 +10,10 @@ const History = () => {
   const [history, setHistory] = useState([]);
   const [paid, setPaid] = useState(false);
   const [unpaid, setUnpaid] = useState(true);
+  const [checkStatus, setCheckStatus] = useState(true);
+
 
   const { user } = useSelector((state) => state.auth);
-
-
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -30,10 +30,12 @@ const History = () => {
   const handlePaid = () => {
     setPaid(true);
     setUnpaid(false);
+    setCheckStatus(false)
   };
 
   const handleUnpaid = () => {
     setUnpaid(true);
+    setCheckStatus(true)
     setPaid(false);
   };
 
@@ -57,14 +59,7 @@ const History = () => {
         {history.length > 0 ? (
           history?.map((h) => (
             <div key={h._id}>
-              <List
-                key={h._id}
-                history={h}
-                setPaid={setPaid}
-                setUnpaid={setUnpaid}
-                paid={paid}
-                unpaid={unpaid}
-              />
+              <List key={h._id} history={h} paid={paid} unpaid={unpaid} checkStatus={checkStatus} />
             </div>
           ))
         ) : (

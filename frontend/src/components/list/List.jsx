@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./List.css";
 import Moment from "react-moment";
 
-// paid and unpaid are just toggling values, they just open what you want to show
-
-//  handling the toggle will not be done here, you just filter wats displayed
-
-//
-
-const List = ({ history, paid, unpaid }) => {
+const List = ({ history, paid, unpaid, checkStatus }) => {
   return (
     <div className="list__all">
       {paid && history.isPaid === true ? (
@@ -38,9 +32,10 @@ const List = ({ history, paid, unpaid }) => {
         ""
       )}
 
-      {unpaid === true && history.isPaid === false ? (
+      {unpaid || checkStatus === true && history?.isPaid === false ? (
         <div className="list__main">
           <div className="list__info">
+          
             <div className="list__from">
               <span className="from">From: </span>
               <Moment format="DD/MM/YYYY" className="list__dates">
@@ -60,10 +55,13 @@ const List = ({ history, paid, unpaid }) => {
               <span className="to">Price: ${history?.price} </span>
             </div>
           </div>
+        
         </div>
       ) : (
         ""
       )}
+
+  
     </div>
   );
 };

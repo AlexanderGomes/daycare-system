@@ -37,7 +37,7 @@ const Navbar = () => {
             </Link>
           </li>
           <li>
-            <Link to={"/"}>
+            <Link to={"/checkout"}>
               <span className="navbar__pay">
                 <FaAmazonPay color="black" size={25} />
               </span>
