@@ -5,6 +5,7 @@
   flex-direction: column;
   align-items: center;
   margin-top: 30px;
+  /* min-height: 100%; */
 }
 
 /* nav css */
@@ -35,7 +36,8 @@
   flex-wrap: wrap;
   margin-top: 40px;
   gap: 20px;
-  width: 100%;
+  /* width: 100%; */
+  margin-bottom: 100px;
 }
 
 .history__noSchedule {

@@ -10,7 +10,7 @@ import Moment from "react-moment";
 
 const List = ({ history, paid, unpaid }) => {
   return (
-    <div>
+    <div className="list__all">
       {paid && history.isPaid === true ? (
         <div className="list__main">
           <div className="list__info">

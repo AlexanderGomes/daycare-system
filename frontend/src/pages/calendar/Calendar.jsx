@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-
 const Calendar = () => {
   const [popUp, setPopUp] = useState(false);
   const [conf, setConf] = useState(false);
@@ -112,6 +111,12 @@ const Calendar = () => {
       )}
       <div className="calendar__main">
         <div className="calendar__move">
+          <div className="calendar__warning">
+            <p>
+              Create Your own Schedule, you will only be charged by the days you get
+              checked-in by one of our employees, you have the option to pay beforehand or at the end of the week.
+            </p>
+          </div>
           <span className="calendar__range">{`${format(
             date[0].startDate,
             "MM/dd/yyyy"
