@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./List.css";
 import Moment from "react-moment";
 
-const List = ({ history, paid, unpaid, checkStatus }) => {
+const List = ({ history, paid, unpaid }) => {
   return (
     <div className="list__all">
       {paid && history.isPaid === true ? (
@@ -32,7 +32,7 @@ const List = ({ history, paid, unpaid, checkStatus }) => {
         ""
       )}
 
-      {unpaid || checkStatus === true && history?.isPaid === false ? (
+      {unpaid  && history?.isPaid === false ? (
         <div className="list__main">
           <div className="list__info">
           

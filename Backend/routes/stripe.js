@@ -9,17 +9,16 @@ router.post("/create-checkout-session", async (req, res) => {
     return {
       price_data: {
         currency: "usd",
+        tax_behavior: "exclusive",
         product_data: {
-          name: item.name,
-          id: item.id,
+          name: "Gomes Daycare",
+          metadata: {
+            id: item.id,
+          },
         },
         unit_amount: item.price * 100,
       },
-      adjustable_quantity: {
-        enabled: true,
-        minimum: 1,
-      },
-      quantity: item.quantity,
+      quantity: 1,
     };
   });
 
@@ -35,7 +34,9 @@ router.post("/create-checkout-session", async (req, res) => {
     automatic_tax: { enabled: true },
   });
 
-  res.send({ url: session.url });
+  console.log(session.payment_status)
+  res.send({ url: session.url});
+
 });
 
 module.exports = router;

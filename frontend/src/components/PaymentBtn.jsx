@@ -1,17 +1,12 @@
 import React from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import getStripe from "../lib/getStripe";
 
-// total payment, and pay individually
-
-const PaymentBtn = ({ totalPrice, data }) => {
-  const { user } = useSelector((state) => state.auth);
-
-  const handleCart = async () => {
+const PaymentBtn = ({ data }) => {
+  const HandleCart = async () => {
     axios
       .post("/api/payment/create-checkout-session", {
         data,
-        userId: user._id,
       })
       .then((response) => {
         if (response.data.url) {
@@ -23,7 +18,7 @@ const PaymentBtn = ({ totalPrice, data }) => {
 
   return (
     <>
-      <button onClick={() => handleCart()}>PAYMENT</button>
+      <button onClick={() => HandleCart()}>PAYMENT</button>
     </>
   );
 };

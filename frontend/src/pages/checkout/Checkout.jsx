@@ -25,13 +25,20 @@ const Checkout = () => {
   let dataArr = Array.from(schedule);
   let result = [];
   let price;
+  let data = []
 
-  dataArr.map((p) => {
+  dataArr?.map((p) => {
     if (p.isPaid === false) {
       result.push(p.price);
       price = result.reduce((a, b) => a + b, 0);
     }
   });
+
+  dataArr?.map((p) => {
+    if (p.isPaid === false) {
+       data.push(p)
+    }
+  })
 
   return (
     <div className="check__main">
@@ -47,10 +54,10 @@ const Checkout = () => {
       </div>
       <div className="check__schedules">
         <p>Total price: $ {price ? price : 0}</p>
-        {schedule.length === 0 ? "" : <PaymentBtn totalPrice={price} data={dataArr} />}
+        {schedule.length === 0 ? "" : <PaymentBtn data={data} />}
       </div>
       <div className="history__list">
-        {dataArr.map((history) =>
+        {dataArr?.map((history) =>
           history?.isPaid === false ? (
             <div className="list__main" key={history._id}>
               <div className="list__info">
