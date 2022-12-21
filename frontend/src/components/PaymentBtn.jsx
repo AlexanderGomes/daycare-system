@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import getStripe from "../lib/getStripe";
 
 const PaymentBtn = ({ data }) => {
   const HandleCart = async () => {
