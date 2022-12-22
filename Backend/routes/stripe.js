@@ -36,7 +36,7 @@ router.post("/create-checkout-session", async (req, res) => {
     };
   });
 
-  line_items.map((p) => {
+  line_items?.map((p) => {
     result.push(p.price_data.product_data.metadata.schedule_id);
   });
 

@@ -18,7 +18,7 @@ const PaymentBtn = ({ data }) => {
 
   return (
     <>
-      <button onClick={() => HandleCart()}>PAYMENT</button>
+      <button className="checkout__btn" onClick={() => HandleCart()}>PAYMENT</button>
     </>
   );
 };

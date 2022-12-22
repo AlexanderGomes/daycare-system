@@ -1,43 +1,40 @@
 /* main css */
 .history__main {
   display: flex;
-  justify-content: center;
-  flex-direction: column;
+  flex-wrap: wrap;
   align-items: center;
-  margin-top: 30px;
-  /* min-height: 100%; */
+  flex-direction: column;
+  width: 100%;
+  margin-top: 50px;
+  gap: 30px;
+  min-height: 50vh;
 }
 
 /* nav css */
 
 .history__navbar {
   display: flex;
-  gap: 30px;
-}
-
-.history__nav {
-  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  font-weight: 600;
-  background-color: rgb(106, 167, 221);
-  width: 130px;
-  display: flex;
   justify-content: center;
-  border-radius: 12px;
-  height: 20px;
-  color: white;
-  cursor: pointer;
-  padding: 5px;
+  align-items: center;
+  gap: 30px;
 }
 
 .history__list {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   margin-top: 40px;
-  gap: 20px;
-  /* width: 100%; */
-  margin-bottom: 100px;
+}
+
+.list {
+ display: flex;
+ flex-wrap: wrap;
+ justify-content: center;
+ gap: 10px;
+ width: 90%;
+ margin-top: 10px;
 }
 
 .history__noSchedule {
@@ -49,7 +46,7 @@
 
 .history__no {
   font-weight: 600;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   font-size: 24px;
   color: rgb(106, 167, 221);
 }
@@ -57,19 +54,37 @@
 .history__img {
   width: 350px;
 }
-
-.history__nav__on {
+.history__nav {
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
   font-weight: 600;
   background-color: rgb(106, 167, 221);
-  width: 130px;
+  width: 150px;
   display: flex;
   justify-content: center;
+  align-items: center;
   border-radius: 12px;
-  height: 20px;
+  height: 50px;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.history__nav__on {
+  display: flex;
+  justify-content: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  align-items: center;
+  font-weight: 600;
+  background-color: rgb(106, 167, 221);
+  width: 150px;
+  height: 50px;
+  border-radius: 12px;
   color: white;
   cursor: pointer;
   padding: 5px;
   border-bottom: 5px solid rgb(247, 151, 151);
 }
 
+.move {
+  margin-left: 30px;
+}

@@ -55,7 +55,7 @@ const History = () => {
           Unpaid Schedules
         </p>
       </div>
-      <div className="history__list">
+      <div className="list">
         {history.length > 0 ? (
           history?.map((h) => (
             <div key={h._id}>

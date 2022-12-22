@@ -4,9 +4,11 @@ import axios from "axios";
 import "./Checkout.css";
 import Moment from "react-moment";
 import PaymentBtn from "../../components/PaymentBtn";
+import found from "../../assets/found.gif";
 
 const Checkout = () => {
   const [schedule, setSchedule] = useState({});
+  const [visible, setVisible] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -25,7 +27,7 @@ const Checkout = () => {
   let dataArr = Array.from(schedule);
   let result = [];
   let price;
-  let data = []
+  let data = [];
 
   dataArr?.map((p) => {
     if (p.isPaid === false) {
@@ -36,25 +38,37 @@ const Checkout = () => {
 
   dataArr?.map((p) => {
     if (p.isPaid === false) {
-       data.push(p)
+      data.push(p);
     }
-  })
+  });
+
+  console.log(data);
 
   return (
     <div className="check__main">
       <div className="check__info">
         <p className="check__explanation">
-          All unpaid schedules are being shown for confirmation, if there's any
-          error please contact the daycare so we can solve the issue. Be aware
-          that we have payment plans for clients going through a hard time, here
-          we don't see you as an asset but as a human being, we're going to help
-          you on everything we can.
+          All unpaid schedules will be displayed below for confirmation, if
+          there's any error please contact the daycare so we can solve the
+          issue. Be aware that we have payment plans for clients going through a
+          hard time, here we don't see you as an asset but as a human being,
+          we're going to help you on everything we can.
         </p>
-        <p>All unpaid schedules</p>
       </div>
       <div className="check__schedules">
-        <p>Total price: $ {price ? price : 0}</p>
-        {schedule.length === 0 ? "" : <PaymentBtn data={data} />}
+        <p className="check__total">Total price: $ {price ? price : 0}</p>
+
+        {!data.length > 0 ? (
+          <div className="check__schedules">
+            <p className="no__schedule">No Schedule is due</p>
+            <img className="history__img" src={found} alt="" />
+          </div>
+        ) : (
+          <div className="check__schedules">
+            <p className="check__p">All unpaid schedules</p>
+            <PaymentBtn data={data} />
+          </div>
+        )}
       </div>
       <div className="history__list">
         {dataArr?.map((history) =>

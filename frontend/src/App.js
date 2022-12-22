@@ -1,6 +1,16 @@
 import React from "react";
-import { Welcome, Register, Login, Calendar, History, Checkout, Success } from "./pages";
-import { Navbar } from "./components";
+
+import "driver.js/dist/driver.min.css";
+import {
+  Welcome,
+  Register,
+  Login,
+  Calendar,
+  History,
+  Checkout,
+  Success,
+} from "./pages";
+import { Navbar, Footer } from "./components";
 import "./App.css";
 import { useSelector } from "react-redux";
 import {
@@ -19,8 +29,8 @@ function App() {
         {user && <Navbar />}
         <Routes>
           <Route path="/" element={user ? <Calendar /> : <Welcome />} />
-          <Route path="/checkout" element={ user ? <Checkout /> : <Login />} />
-          <Route path="/checkout/success" element={ <Success />} />
+          <Route path="/checkout" element={user ? <Checkout /> : <Login />} />
+          <Route path="/checkout/success" element={<Success />} />
           <Route path="/calendar" element={user ? <Calendar /> : <Login />} />
           <Route
             path="/auth/login"
@@ -32,6 +42,7 @@ function App() {
           />
           <Route path="/schedules" element={user ? <History /> : <Login />} />
         </Routes>
+        {user && <Footer />}
       </Router>
     </>
   );
