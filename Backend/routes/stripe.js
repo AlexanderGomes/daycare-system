@@ -1,9 +1,10 @@
 const express = require("express");
+const Schedule = require("../models/schedule");
 const stripe = require("stripe")(process.env.STRIPE__SECRET__KEY);
-const Sugar = require("sugar");
 
 const router = express.Router();
 require("dotenv").config();
+let result = [];
 
 router.post("/create-checkout-session", async (req, res) => {
   const line_items = req.body.data.map((item) => {
@@ -35,6 +36,10 @@ router.post("/create-checkout-session", async (req, res) => {
     };
   });
 
+  line_items.map((p) => {
+    result.push(p.price_data.product_data.metadata.schedule_id);
+  });
+
   const session = await stripe.checkout.sessions.create({
     phone_number_collection: {
       enabled: true,
@@ -50,8 +55,12 @@ router.post("/create-checkout-session", async (req, res) => {
   res.send({ url: session.url });
 });
 
-const fulfillOrder = (lineItems) => {
-  console.log(lineItems);
+const fulfillOrder = async () => {
+  await Schedule.updateMany(
+    { _id: { $in: result } },
+    { $set: { isPaid: true } },
+    { multi: true }
+  );
 };
 
 router.post(
@@ -92,18 +101,7 @@ router.post(
 
     // Handle the checkout.session.completed event
     if (eventType === "checkout.session.completed") {
-      
-      // Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
-      const sessionWithLineItems = await stripe.checkout.sessions.retrieve(
-        data.id,
-        {
-          expand: ["line_items"],
-        }
-      );
-      const lineItems = sessionWithLineItems.line_items;
-
-      // Fulfill the purchase...
-      fulfillOrder(lineItems);
+      fulfillOrder();
     }
 
     res.status(200).end();
