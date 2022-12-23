@@ -47,7 +47,7 @@ router.post("/create-checkout-session", async (req, res) => {
 
     line_items,
     mode: "payment",
-    success_url: `${process.env.CLIENT__URL}/checkout/success`,
+    success_url: `${process.env.CLIENT__URL}/checkout`,
     cancel_url: `${process.env.CLIENT__URL}/checkout`,
     automatic_tax: { enabled: true },
   });

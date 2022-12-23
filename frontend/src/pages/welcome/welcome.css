@@ -75,7 +75,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    top: -10px;
   }
 
   .welcome__text {

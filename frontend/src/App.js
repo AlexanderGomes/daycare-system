@@ -8,7 +8,6 @@ import {
   Calendar,
   History,
   Checkout,
-  Success,
 } from "./pages";
 import { Navbar, Footer } from "./components";
 import "./App.css";
@@ -30,7 +29,6 @@ function App() {
         <Routes>
           <Route path="/" element={user ? <Calendar /> : <Welcome />} />
           <Route path="/checkout" element={user ? <Checkout /> : <Login />} />
-          <Route path="/checkout/success" element={<Success />} />
           <Route path="/calendar" element={user ? <Calendar /> : <Login />} />
           <Route
             path="/auth/login"
