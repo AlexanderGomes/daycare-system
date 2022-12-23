@@ -1,7 +1,7 @@
 .list__main {
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   background-color: rgb(214, 214, 214);
   width: 200px;
   border-radius: 12px;
@@ -35,4 +35,11 @@
 
 .none {
   display: none;
+}
+
+.list__all {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }

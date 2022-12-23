@@ -28,15 +28,6 @@
   margin-top: 40px;
 }
 
-.list {
- display: flex;
- flex-wrap: wrap;
- justify-content: center;
- gap: 10px;
- width: 90%;
- margin-top: 10px;
-}
-
 .history__noSchedule {
   display: flex;
   flex-direction: column;
@@ -85,6 +76,12 @@
   border-bottom: 5px solid rgb(247, 151, 151);
 }
 
-.move {
-  margin-left: 30px;
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  padding: 30px;
+  height: 100%;
+  width: 100%;
 }
