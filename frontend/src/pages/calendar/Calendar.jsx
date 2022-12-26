@@ -3,7 +3,7 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
 import "./Calendar.css";
-
+import { useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -32,6 +32,7 @@ const Calendar = () => {
 
   const takenScheduleMessage = "Request failed with status code 400";
   const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
 
   // BUG //
   // current date is causing bugs, for some reason you're selecting the current date and receiving one day later maybe because of time zones, but
@@ -62,7 +63,7 @@ const Calendar = () => {
       });
       setTimeout(function () {
         window.location.reload();
-      }, 3000);
+      }, 1000);
     } catch (error) {
       if (error.message === takenScheduleMessage) {
         toast.error("Schedule is Taken by You", {

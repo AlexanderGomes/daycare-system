@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import "./Checkout.css";
 import Moment from "react-moment";
@@ -8,7 +8,6 @@ import found from "../../assets/found.gif";
 
 const Checkout = () => {
   const [schedule, setSchedule] = useState({});
-  const [visible, setVisible] = useState(false);
 
   const { user } = useSelector((state) => state.auth);
 
@@ -23,6 +22,8 @@ const Checkout = () => {
     };
     fetchUser();
   }, [user._id]);
+
+  
 
   let dataArr = Array.from(schedule);
   let result = [];
@@ -41,8 +42,6 @@ const Checkout = () => {
       data.push(p);
     }
   });
-
-  console.log(data);
 
   return (
     <div className="check__main">

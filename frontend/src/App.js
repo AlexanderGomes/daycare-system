@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import "driver.js/dist/driver.min.css";
 import {
@@ -8,6 +9,7 @@ import {
   Calendar,
   History,
   Checkout,
+  Dash,
 } from "./pages";
 import { Navbar, Footer } from "./components";
 import "./App.css";
@@ -20,25 +22,61 @@ import {
 } from "react-router-dom";
 
 function App() {
+  const [data, setData] = useState([]);
   const { user } = useSelector((state) => state.auth);
+
+  const UserById = async () => {
+    useEffect(() => {
+      if(user) {
+      axios
+        .get("/api/user/" + user._id)
+        .then((res) => {
+          setData(res.data);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+      }
+    }, [user]);
+  };
+
+  UserById();
+
+  const ProtectedRoute = ({ children }) => {
+    if (data.isAdmin === false) {
+      return <Navigate to="/auth/login" />;
+    }
+
+    return children;
+  };
 
   return (
     <>
       <Router>
-        {user && <Navbar />}
+        {user && data.isAdmin === false ? <Navbar /> : ''}
         <Routes>
           <Route path="/" element={user ? <Calendar /> : <Welcome />} />
           <Route path="/checkout" element={user ? <Checkout /> : <Login />} />
           <Route path="/calendar" element={user ? <Calendar /> : <Login />} />
           <Route
             path="/auth/login"
-            element={user ? <Navigate to={"/calendar"} /> : <Login />}
+            element={user ? <Navigate to={"/"} /> : <Login />}
           />
           <Route
             path="/auth/register"
-            element={user ? <Navigate to={"/calendar"} /> : <Register />}
+            element={user ? <Navigate to={"/"} /> : <Register />}
           />
           <Route path="/schedules" element={user ? <History /> : <Login />} />
+
+          <Route
+            path="/admin"
+            element={
+              user ?
+              <ProtectedRoute>
+                <Dash data={data} />
+              </ProtectedRoute> : <Navigate to={"/auth/login"} />
+            }
+          />
         </Routes>
         {user && <Footer />}
       </Router>

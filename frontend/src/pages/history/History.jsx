@@ -55,7 +55,12 @@ const History = () => {
         </p>
       </div>
       <div className="list">
-        {history.length > 0 ? (
+        {history.length === 0 ? (
+          <div className="history__noSchedule">
+            <p className="history__no">No Schedules</p>
+            <img className="history__img" src={found} alt="" />
+          </div>
+        ) : (
           history?.map((h) => (
             <div key={h._id}>
               <List
@@ -67,11 +72,6 @@ const History = () => {
               />
             </div>
           ))
-        ) : (
-          <div className="history__noSchedule">
-            <p className="history__no">No Schedules</p>
-            <img className="history__img" src={found} alt="" />
-          </div>
         )}
       </div>
     </div>

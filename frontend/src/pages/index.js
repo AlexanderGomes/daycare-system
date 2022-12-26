@@ -4,6 +4,8 @@ export {default as Login} from './login/Login'
 export {default as Calendar} from './calendar/Calendar'
 export {default as History} from './history/History'
 export {default as Checkout} from './checkout/Checkout'
+export {default as Dash} from './admin/dashboard/Dash'
+
 
 
 

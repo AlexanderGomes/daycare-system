@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 const PaymentBtn = ({ data }) => {
-  console.log(data)
+
   const HandleCart = async () => {
     axios
       .post("/api/payment/create-checkout-session", {

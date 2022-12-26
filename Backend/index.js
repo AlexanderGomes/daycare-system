@@ -1,7 +1,7 @@
 const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
 const port = process.env.PORT || 5000;
+
+require("dotenv").config();
 const dbConnect = require("./utils/dbConnect");
 
 //folders
@@ -16,13 +16,12 @@ const app = express();
 
 // Use JSON parser for all non-webhook routes
 app.use((req, res, next) => {
-  if (req.originalUrl === '/api/payment/webhook') {
+  if (req.originalUrl === "/api/payment/webhook") {
     next();
   } else {
     express.json()(req, res, next);
   }
 });
-
 
 //routes
 app.use("/api/user", userRoutes);

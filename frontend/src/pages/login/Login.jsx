@@ -44,7 +44,6 @@ const Login = () => {
   });
 
   useEffect(() => {
-
     if (formik.errors.password) {
       setWrongPass(false);
     }

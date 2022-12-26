@@ -113,7 +113,14 @@ const createAdmin = asyncHandler(async (req, res) => {
   }
 });
 
-
+const userById = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT__SECRET, {
@@ -126,4 +133,5 @@ module.exports = {
   loginUser,
   AdminCreateCode,
   createAdmin,
+  userById,
 };
