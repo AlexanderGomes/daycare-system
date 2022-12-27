@@ -9,9 +9,17 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-const Calendar = () => {
+const Calendar = ({ data }) => {
   const [popUp, setPopUp] = useState(false);
   const [conf, setConf] = useState(false);
+  const { user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (data.isAdmin === true) {
+      navigate("/admin/history");
+    }
+  }, [data, user]);
 
   const [date, setDate] = useState([
     {
@@ -31,8 +39,6 @@ const Calendar = () => {
   const days = dayDifference(date[0].endDate, date[0].startDate);
 
   const takenScheduleMessage = "Request failed with status code 400";
-  const { user } = useSelector((state) => state.auth);
-  const navigate = useNavigate();
 
   // BUG //
   // current date is causing bugs, for some reason you're selecting the current date and receiving one day later maybe because of time zones, but
@@ -87,7 +93,7 @@ const Calendar = () => {
 
   return (
     <div className="calendar__color">
-      {popUp === true ? (
+      {data.isAdmin === false && popUp === true ? (
         <div className="calendar__popup__color">
           <div className="calendar__popup__main">
             <p className="calendar__p">are you sure about the schedule?</p>
@@ -110,28 +116,33 @@ const Calendar = () => {
       ) : (
         ""
       )}
-      <div className="calendar__main">
-        <div className="calendar__move">
-          <span className="calendar__range">{`${format(
-            date[0].startDate,
-            "MM/dd/yyyy"
-          )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
-          <DateRange
-            editableDateInputs={true}
-            onChange={(item) => setDate([item.selection])}
-            moveRangeOnFirstSelection={false}
-            ranges={date}
-            className="calendar__date"
-            minDate={new Date()}
-          />
-          <button
-            className="register__schedule__btn"
-            onClick={() => setPopUp(true)}
-          >
-            Create Schedule
-          </button>
+
+      {data.isAdmin === false ? (
+        <div className="calendar__main">
+          <div className="calendar__move">
+            <span className="calendar__range">{`${format(
+              date[0].startDate,
+              "MM/dd/yyyy"
+            )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
+            <DateRange
+              editableDateInputs={true}
+              onChange={(item) => setDate([item.selection])}
+              moveRangeOnFirstSelection={false}
+              ranges={date}
+              className="calendar__date"
+              minDate={new Date()}
+            />
+            <button
+              className="register__schedule__btn"
+              onClick={() => setPopUp(true)}
+            >
+              Create Schedule
+            </button>
+          </div>
         </div>
-      </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

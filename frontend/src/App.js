@@ -10,8 +10,9 @@ import {
   History,
   Checkout,
   Dash,
+AdminHistory,
 } from "./pages";
-import { Navbar, Footer } from "./components";
+import { Navbar, Footer, AdminNavbar } from "./components";
 import "./App.css";
 import { useSelector } from "react-redux";
 import {
@@ -27,15 +28,15 @@ function App() {
 
   const UserById = async () => {
     useEffect(() => {
-      if(user) {
-      axios
-        .get("/api/user/" + user._id)
-        .then((res) => {
-          setData(res.data);
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
+      if (user) {
+        axios
+          .get("/api/user/" + user._id)
+          .then((res) => {
+            setData(res.data);
+          })
+          .catch((error) => {
+            console.log(error.message);
+          });
       }
     }, [user]);
   };
@@ -53,11 +54,22 @@ function App() {
   return (
     <>
       <Router>
-        {user && data.isAdmin === false ? <Navbar /> : ''}
+        {user && data.isAdmin === false ? <Navbar /> : ""}
+        {data.isAdmin === true ? <AdminNavbar /> : ""}
+
         <Routes>
-          <Route path="/" element={user ? <Calendar /> : <Welcome />} />
-          <Route path="/checkout" element={user ? <Checkout /> : <Login />} />
-          <Route path="/calendar" element={user ? <Calendar /> : <Login />} />
+          <Route
+            path="/"
+            element={user ? <Calendar data={data} /> : <Welcome />}
+          />
+          <Route
+            path="/checkout"
+            element={user && data.isAdmin === false ? <Checkout /> : <Login />}
+          />
+          <Route
+            path="/calendar"
+            element={user ? <Calendar data={data} /> : <Login />}
+          />
           <Route
             path="/auth/login"
             element={user ? <Navigate to={"/"} /> : <Login />}
@@ -66,19 +78,38 @@ function App() {
             path="/auth/register"
             element={user ? <Navigate to={"/"} /> : <Register />}
           />
-          <Route path="/schedules" element={user ? <History /> : <Login />} />
+          <Route
+            path="/schedules"
+            element={user && data.isAdmin === false ? <History /> : <Login />}
+          />
 
           <Route
             path="/admin"
             element={
-              user ?
-              <ProtectedRoute>
-                <Dash data={data} />
-              </ProtectedRoute> : <Navigate to={"/auth/login"} />
+              user ? (
+                <ProtectedRoute>
+                  <Dash data={data} />
+                </ProtectedRoute>
+              ) : (
+                <Navigate to={"/auth/login"} />
+              )
+            }
+          />
+
+          <Route
+            path="/admin/history"
+            element={
+              user ? (
+                <ProtectedRoute>
+                  <AdminHistory data={data} />
+                </ProtectedRoute>
+              ) : (
+                <Navigate to={"/auth/login"} />
+              )
             }
           />
         </Routes>
-        {user && <Footer />}
+        {user && data.isAdmin === false ? <Footer /> : ""}
       </Router>
     </>
   );
