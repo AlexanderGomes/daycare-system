@@ -4,8 +4,10 @@ import {Earnings} from '../../'
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
 import "./dash.css";
+
+
+
 
 const Dash = ({ data }) => {
   const [visible, setVisible] = useState(false);

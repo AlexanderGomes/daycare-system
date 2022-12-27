@@ -24,8 +24,8 @@ const AdminNavbar = () => {
             </Link>
           </li>
           <li>
-            <Link style={{ textDecoration: "none" }} to={"/"}>
-              <span className="navbar__feed color">Schedule</span>
+            <Link style={{ textDecoration: "none" }} to={"/admin"}>
+              <span className="navbar__feed color">Management</span>
             </Link>
           </li>
           <li>
@@ -52,31 +52,19 @@ const AdminNavbar = () => {
               <div className="toggle__icons">
                 <ul className="toggle__icons__ul">
                   <li>
-                    <Link style={{ textDecoration: "none" }} to={"/calendar"}>
-                      <span onClick={close} className="navbar__schedule color">
-                        Earnings
-                        <p className="toggle__details">
-                          create your own schedules without getting charged, you
-                          only get charged after the everyday check-in....{" "}
-                        </p>
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link style={{ textDecoration: "none" }} to={"/schedules"}>
+                    <Link style={{ textDecoration: "none" }} to={"/admin/history"}>
                       <span className="navbar__history color" onClick={close}>
                         History
                         <p className="toggle__details">
-                          see all your schedules, the one's that are paid for
-                          already and the ones that are due...
+                         sell all the bussiness data, active users, pending values and much more...
                         </p>
                       </span>
                     </Link>
                   </li>
                   <li>
-                    <Link style={{ textDecoration: "none" }} to={"/"}>
+                    <Link style={{ textDecoration: "none" }} to={"/admin"}>
                       <span className="navbar__feed color" onClick={close}>
-                      Schedule
+                      Management
                         <p className="toggle__details">
                           daily content about the activities that the kids are
                           doing, gentle parenting and much more...

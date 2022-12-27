@@ -24,7 +24,7 @@ const Checkout = () => {
   }, [user._id]);
 
   
-
+console.log(schedule)
   let dataArr = Array.from(schedule);
   let result = [];
   let price;
@@ -33,9 +33,10 @@ const Checkout = () => {
   dataArr?.map((p) => {
     if (p.isPaid === false) {
       result.push(p.price);
-      price = result.reduce((a, b) => a + b, 0);
     }
   });
+  
+  price = result.reduce((a, b) => a + b, 0);
 
   dataArr?.map((p) => {
     if (p.isPaid === false) {
