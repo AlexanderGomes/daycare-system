@@ -17,6 +17,8 @@ const History = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const res = await axios.get(`/api/schedule/${user._id}`);
+      await axios.get(`/api/schedule/payment/user/balance/${user._id}`);
+
       setHistory(
         res.data.sort((p1, p2) => {
           return new Date(p2.createdAt) - new Date(p1.createdAt);
@@ -29,12 +31,10 @@ const History = () => {
   const handlePaid = () => {
     setPaid(true);
     setUnpaid(false);
-    setCheckStatus(false);
   };
 
   const handleUnpaid = () => {
     setUnpaid(true);
-    setCheckStatus(true);
     setPaid(false);
   };
 

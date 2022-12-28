@@ -10,6 +10,9 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "Please add your email"],
     },
+    phoneNumber: {
+      type: Number,
+    },
     password: {
       type: String,
       required: [true, "Please add your password"],
@@ -21,7 +24,11 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    activity: {
+    paidBalance: {
+      type: Array,
+      default: [],
+    },
+    unpaidBalance: {
       type: Array,
       default: [],
     },

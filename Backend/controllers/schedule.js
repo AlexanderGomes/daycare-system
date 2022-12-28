@@ -6,7 +6,6 @@ const CheckIn = require("../models/check-in");
 const asyncHandler = require("express-async-handler");
 const dbConnect = require("../utils/dbConnect");
 
-
 dbConnect();
 
 //high risk function
@@ -14,7 +13,7 @@ const createSchedule = asyncHandler(async (req, res) => {
   const newSchedule = new Schedule(req.body);
 
   const previousSchedule = await Schedule.find({ userId: req.body.userId });
-  const user = await User.findById(req.body.userId)
+  const user = await User.findById(req.body.userId);
 
   let compareStartValues;
   let compareEndValues;
@@ -36,9 +35,12 @@ const createSchedule = asyncHandler(async (req, res) => {
   }
 
   try {
-    await user.updateOne({ $set: { hasSchedule: true } }, {new: true});
+    await user.updateOne({ $set: { hasSchedule: true } }, { new: true });
     const savedSchedule = await newSchedule.save();
-    await user.updateOne({ $push: { activity: savedSchedule._id } }, {new: true});
+    await user.updateOne(
+      { $push: { activity: savedSchedule._id } },
+      { new: true }
+    );
     res.status(200).json(savedSchedule);
   } catch (error) {
     res.status(400).json(error.message);
@@ -95,8 +97,6 @@ const checkInUser = asyncHandler(async (req, res) => {
 
   let compareClientHistory;
 
-  // improved funciton to use a boolean to detect when there's duplication when comparing the client history
-  // and the current chosen date, instead of realocation space.
   let isTaken = false;
 
   // maping through the client history to get all the start checkin times, if the time we're
@@ -133,7 +133,7 @@ const checkOutUser = asyncHandler(async (req, res) => {
   const adminUser = await User.findById(req.body.userId);
 
   try {
-    if (adminUser.isAdmin) {
+    if (adminUser.isAdmin === true) {
       const lastCheckedInTime = await CheckIn.findOneAndUpdate(
         { clientId: req.body.clientId },
         { $set: { end: req.body.end } },
@@ -191,23 +191,57 @@ const paidSchedules = asyncHandler(async (req, res) => {
 });
 
 const getUserData = asyncHandler(async (req, res) => {
-  let totalUsers = []
-  let userScheduleOn = 0
+  let totalUsers = [];
+  let userScheduleOn = 0;
+
   try {
     const users = await User.find();
     users?.map((user) => {
       if (user.isAdmin === false) {
-        totalUsers.push(user)
+        totalUsers.push(user);
       }
-      
-      if(user.hasSchedule === true) {
-       userScheduleOn += 1
+
+      if (user.hasSchedule === true) {
+        userScheduleOn += 1;
       }
     });
-    res.status(200).json([{
-      totalUsers: totalUsers.length,
-      userScheduleOn: userScheduleOn
-    }]);
+    res.status(200).json([
+      {
+        totalUsers: totalUsers.length,
+        userScheduleOn: userScheduleOn,
+      },
+    ]);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+// get paid and unpaid balance
+const getBalance = asyncHandler(async (req, res) => {
+  const paidBalance = [];
+  let revenue;
+  const unpaidBalance = [];
+  let unpaid;
+
+  try {
+    const previousSchedule = await Schedule.find({ userId: req.params.id });
+    const user = await User.findById(req.params.id)
+    previousSchedule.map((p) => {
+      if (p.isPaid === true) {
+        paidBalance.push(p.price);
+      }
+
+      if (p.isPaid === false) {
+        unpaidBalance.push(p.price);
+      }
+    });
+
+    revenue = paidBalance.reduce((a, b) => a + b, 0);
+    unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
+
+    await user.updateOne({ $set: { paidBalance: revenue, unpaidBalance: unpaid } });
+
+    res.status(200).json([{ paidBalance: revenue, unpaidBalance: unpaid }]);
   } catch (error) {
     res.status(400).json(error.message);
   }
@@ -221,4 +255,5 @@ module.exports = {
   getAllSchedule,
   paidSchedules,
   getUserData,
+  getBalance,
 };

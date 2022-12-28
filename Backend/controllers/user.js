@@ -122,6 +122,15 @@ const userById = asyncHandler(async (req, res) => {
   }
 });
 
+const getAllUsers = asyncHandler(async (req, res) => {
+  try {
+    const user = await User.find();
+    res.status(201).json(user);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT__SECRET, {
     expiresIn: "30d",
@@ -134,4 +143,5 @@ module.exports = {
   AdminCreateCode,
   createAdmin,
   userById,
+  getAllUsers
 };
