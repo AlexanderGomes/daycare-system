@@ -19,10 +19,6 @@ const checkInSchema = mongoose.Schema(
     end: {
       type: Date,
     },
-    location: {
-      type: String,
-      required: [true, "location is required"],
-    },
   },
   { timestamps: true }
 );

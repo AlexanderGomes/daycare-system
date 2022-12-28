@@ -121,6 +121,9 @@ const checkInUser = asyncHandler(async (req, res) => {
   try {
     if (adminUser.isAdmin) {
       const savedClient = await checkInClient.save();
+      await client.updateOne({
+        $set: { isCheckIn: true },
+      });
       res.status(200).json(savedClient);
     }
   } catch (error) {
@@ -131,14 +134,23 @@ const checkInUser = asyncHandler(async (req, res) => {
 //high risk function
 const checkOutUser = asyncHandler(async (req, res) => {
   const adminUser = await User.findById(req.body.userId);
+  const client = await User.findById(req.body.clientId);
+
+  const lastCheckedInTime = await CheckIn.findOne({ clientId: client._id }).sort({
+    _id: -1,
+  });
+
+
 
   try {
     if (adminUser.isAdmin === true) {
-      const lastCheckedInTime = await CheckIn.findOneAndUpdate(
-        { clientId: req.body.clientId },
+      await client.updateOne({
+        $set: { isCheckIn: false },
+      });
+      await lastCheckedInTime.updateOne(
         { $set: { end: req.body.end } },
         { new: true }
-      ).sort({ _id: -1 }); // getting the last document
+      );
       res.status(200).json(lastCheckedInTime);
     }
   } catch (error) {
@@ -225,7 +237,7 @@ const getBalance = asyncHandler(async (req, res) => {
 
   try {
     const previousSchedule = await Schedule.find({ userId: req.params.id });
-    const user = await User.findById(req.params.id)
+    const user = await User.findById(req.params.id);
     previousSchedule.map((p) => {
       if (p.isPaid === true) {
         paidBalance.push(p.price);
@@ -239,9 +251,20 @@ const getBalance = asyncHandler(async (req, res) => {
     revenue = paidBalance.reduce((a, b) => a + b, 0);
     unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
 
-    await user.updateOne({ $set: { paidBalance: revenue, unpaidBalance: unpaid } });
+    await user.updateOne({
+      $set: { paidBalance: revenue, unpaidBalance: unpaid },
+    });
 
     res.status(200).json([{ paidBalance: revenue, unpaidBalance: unpaid }]);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+const getCheckIn = asyncHandler(async (req, res) => {
+  try {
+    const checkin = await CheckIn.find();
+    res.status(200).json(checkin);
   } catch (error) {
     res.status(400).json(error.message);
   }
@@ -256,4 +279,5 @@ module.exports = {
   paidSchedules,
   getUserData,
   getBalance,
+  getCheckIn,
 };

@@ -10,7 +10,7 @@ import {
   History,
   Checkout,
   Dash,
-AdminHistory,
+  AdminHistory,
 } from "./pages";
 import { Navbar, Footer, AdminNavbar } from "./components";
 import "./App.css";
@@ -42,6 +42,16 @@ function App() {
   };
 
   UserById();
+
+  useEffect(() => {
+    if (user) {
+      const fetchUser = async () => {
+        await axios.get(`/api/schedule/payment/user/balance/${user._id}`);
+      };
+
+      fetchUser();
+    }
+  }, [user]);
 
   const ProtectedRoute = ({ children }) => {
     if (data.isAdmin === false) {

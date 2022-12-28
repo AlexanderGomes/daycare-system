@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Client } from "../../../components";
+import { Client, CheckIn } from "../../../components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./dash.css";
-
-//TODO-- fetch phone number, add search bar
 
 const Dash = ({ data }) => {
   const [visible, setVisible] = useState(false);
@@ -13,6 +11,10 @@ const Dash = ({ data }) => {
   const [toggleClient, setToggleClient] = useState(true);
   const [toggleHistory, setToggleHistory] = useState(false);
   const [toggleSchedule, setToggleSchedule] = useState(false);
+  const [search, setSearch] = useState("");
+  const [search2, setSearch2] = useState("");
+
+  const [checkin, setCheckin] = useState([]);
 
   useEffect(() => {
     if (data.isAdmin === true) {
@@ -28,7 +30,13 @@ const Dash = ({ data }) => {
     fetchUsers();
   }, []);
 
-console.log(users)
+  useEffect(() => {
+    const fetchCheckin = async () => {
+      const res = await axios.get(`/api/schedule/checkin/data`);
+      setCheckin(res.data);
+    };
+    fetchCheckin();
+  }, []);
 
   const handleClient = () => {
     setToggleClient(true);
@@ -58,13 +66,13 @@ console.log(users)
                 className={toggleClient === true ? "toggle__active" : ""}
                 onClick={handleClient}
               >
-                Clients
+                Check-in
               </li>
               <li
                 className={toggleHistory === true ? "toggle__active" : ""}
                 onClick={handleHistory}
               >
-                Check-in
+                Check-out
               </li>
               <li
                 className={toggleSchedule === true ? "toggle__active" : ""}
@@ -76,20 +84,65 @@ console.log(users)
           </div>
 
           <div className="dash__toggle__main">
-
             {toggleClient === true ? (
-              <div className="toggle">
-                {users?.map((user) => (
-                  <Client user={user} key={user._id} />
-                ))}
-              </div>
+              <>
+                <div className="input__mv">
+                  <input
+                    type="text"
+                    className="dash__search"
+                    placeholder="Search By Name"
+                    onChange={(event) => setSearch(event.target.value)}
+                  />
+                </div>
+                <div className="toggle">
+                  {users
+                    ?.filter((val) => {
+                      if (search == "") {
+                        return val;
+                      } else if (
+                        val.name
+                          .toLowerCase()
+                          .includes(search.toLocaleLowerCase())
+                      ) {
+                        return val;
+                      }
+                    })
+                    .map((user) => (
+                      <Client data={user} key={user._id} />
+                    ))}
+                </div>
+              </>
             ) : (
               ""
             )}
             {toggleHistory === true ? (
-              <div className="toggle">
-                <p>b</p>
-              </div>
+              <>
+                <div className="input__mv">
+                  <input
+                    type="text"
+                    className="dash__search"
+                    placeholder="Search By Name"
+                    onChange={(event) => setSearch2(event.target.value)}
+                  />
+                </div>
+                <div className="toggle">
+                {users
+                    ?.filter((val) => {
+                      if (search2 == "") {
+                        return val;
+                      } else if (
+                        val.name
+                          .toLowerCase()
+                          .includes(search.toLocaleLowerCase())
+                      ) {
+                        return val;
+                      }
+                    })
+                    .map((user) => (
+                      <CheckIn data={user} key={user._id} />
+                    ))}
+                </div>
+              </>
             ) : (
               ""
             )}

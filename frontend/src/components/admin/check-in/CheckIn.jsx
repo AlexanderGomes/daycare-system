@@ -1,29 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./Client.css";
-import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import "./CheckIn.css";
+
+//TODO-- mark client as late, add it to the user schema
 
 
-//TODO -- error if checkin client at the same day
-
-const Client = ({ data }) => {
-  const { user } = useSelector((state) => state.auth);
+const CheckIn = ({ data }) => {
+  const [users, setUsers] = useState([]);
 
   const date1 = new Date()
-    .toISOString()
-    .slice(0, 10)
-    .replace(/T/, " ")
-    .replace(/\..+/, "");
+  .toISOString()
+  .slice(0, 10)
+  .replace(/T/, " ")
+  .replace(/\..+/, "");
+  
 
-  const checkIn = async () => {
+  const { user } = useSelector((state) => state.auth);
+
+  const checkOut = async () => {
     try {
-      await axios.post("/api/schedule/checkin", {
+      await axios.put("/api/schedule/checkout", {
         userId: user._id,
         clientId: data._id,
-        start: date1,
+        end: date1,
       });
-      toast.success("Check-in done", {
+      toast.success("Check-out done", {
         duration: 1500,
       });
       setTimeout(function () {
@@ -34,14 +37,12 @@ const Client = ({ data }) => {
     }
   };
 
-
-
   return (
     <div className="client__main">
-      {data.isCheckIn === false && data.isAdmin === false ? (
+      {data.isCheckIn === true && data.isAdmin === false ? (
         <div className="client__color">
           <p className="client__name">{data.name}</p>
-          <button className="check__btn" onClick={checkIn}>Check-in</button>
+          <button className="check__btn" onClick={checkOut}>Check-out</button>
           <p className="client__email">{data.email}</p>
           <div className="client__balance">
             <p className="client__paid">
@@ -60,4 +61,4 @@ const Client = ({ data }) => {
   );
 };
 
-export default Client;
+export default CheckIn;

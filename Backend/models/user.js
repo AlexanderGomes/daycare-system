@@ -36,6 +36,10 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isCheckIn: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

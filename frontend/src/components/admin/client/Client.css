@@ -40,3 +40,8 @@
     color: rgb(184, 52, 52);
     font-weight: 600;
 }
+
+.check__btn {
+  border-radius: 12px;
+cursor: pointer;
+}
