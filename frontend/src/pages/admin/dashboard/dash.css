@@ -32,3 +32,13 @@
 .toggle__active {
     color: rgb(84, 219, 84);
 }
+
+
+.toggle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+}

@@ -5,15 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./dash.css";
 
-// sort of a navbar, elements:
-// -- list of active and non active clients (history)
-// -- create unavailable times (schedule)
-// -- list of unavailable times
-// -- check in and check out users (check-in)
-
-// client component:
-// active/non active clients
-// name, email, phone-number, total paid and unpaid values per client
+//TODO-- fetch phone number, add search bar
 
 const Dash = ({ data }) => {
   const [visible, setVisible] = useState(false);
@@ -36,7 +28,7 @@ const Dash = ({ data }) => {
     fetchUsers();
   }, []);
 
-
+console.log(users)
 
   const handleClient = () => {
     setToggleClient(true);
@@ -84,9 +76,10 @@ const Dash = ({ data }) => {
           </div>
 
           <div className="dash__toggle__main">
+
             {toggleClient === true ? (
               <div className="toggle">
-                {users.map((user) => (
+                {users?.map((user) => (
                   <Client user={user} key={user._id} />
                 ))}
               </div>
