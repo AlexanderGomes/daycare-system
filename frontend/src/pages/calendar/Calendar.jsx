@@ -13,6 +13,7 @@ const Calendar = ({ data }) => {
   const [popUp, setPopUp] = useState(false);
   const [conf, setConf] = useState(false);
   const { user } = useSelector((state) => state.auth);
+  const [available, setUnavailable] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,9 +21,6 @@ const Calendar = ({ data }) => {
       navigate("/admin/history");
     }
   }, [data, user]);
-
-
-
 
   const [date, setDate] = useState([
     {
@@ -43,10 +41,18 @@ const Calendar = ({ data }) => {
 
   const takenScheduleMessage = "Request failed with status code 400";
 
-  // BUG //
-  // current date is causing bugs, for some reason you're selecting the current date and receiving one day later maybe because of time zones, but
-  // selecting just the current day allow you to spam it as much as you want, selecting the current day plus another one won't cause problems
-  // it's only the current day that is causing problems
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await axios.get("/api/schedule/admin/dates/available");
+
+      setUnavailable(
+        res.data.sort((p1, p2) => {
+          return new Date(p2.createdAt) - new Date(p1.createdAt);
+        })
+      );
+    };
+    fetchUser();
+  }, [user._id]);
 
   const CreateSchedule = async () => {
     try {
@@ -94,6 +100,19 @@ const Calendar = ({ data }) => {
     setConf(!false);
   }, [conf]);
 
+  const dates = [];
+
+  available.map((p) => {
+    let left = 0;
+    while (left < p.dates.length) {
+      const bs = new Date(p.dates[left]);
+      dates.push(bs);
+      left++;
+    }
+  });
+
+
+
   return (
     <div className="calendar__color">
       {data.isAdmin === false && popUp === true ? (
@@ -134,6 +153,7 @@ const Calendar = ({ data }) => {
               ranges={date}
               className="calendar__date"
               minDate={new Date()}
+              disabledDates={dates}
             />
             <button
               className="register__schedule__btn"

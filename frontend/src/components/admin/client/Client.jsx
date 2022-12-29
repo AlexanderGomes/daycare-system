@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 
 
-//TODO -- error if checkin client at the same day
 
 const Client = ({ data }) => {
   const { user } = useSelector((state) => state.auth);
@@ -15,6 +14,8 @@ const Client = ({ data }) => {
     .slice(0, 10)
     .replace(/T/, " ")
     .replace(/\..+/, "");
+
+  const takenCheckin = "Request failed with status code 400";
 
   const checkIn = async () => {
     try {
@@ -30,18 +31,22 @@ const Client = ({ data }) => {
         window.location.reload();
       }, 1000);
     } catch (err) {
-      console.log(err.message);
+      if (err.message === takenCheckin) {
+        toast.error("Check in for the day is done", {
+          duration: 3000,
+        });
+      }
     }
   };
-
-
 
   return (
     <div className="client__main">
       {data.isCheckIn === false && data.isAdmin === false ? (
         <div className="client__color">
           <p className="client__name">{data.name}</p>
-          <button className="check__btn" onClick={checkIn}>Check-in</button>
+          <button className="check__btn" onClick={checkIn}>
+            Check-in
+          </button>
           <p className="client__email">{data.email}</p>
           <div className="client__balance">
             <p className="client__paid">

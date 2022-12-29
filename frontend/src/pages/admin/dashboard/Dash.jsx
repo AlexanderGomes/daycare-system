@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Client, CheckIn } from "../../../components";
+import { Client, CheckIn, Schedule } from "../../../components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -126,7 +126,7 @@ const Dash = ({ data }) => {
                   />
                 </div>
                 <div className="toggle">
-                {users
+                  {users
                     ?.filter((val) => {
                       if (search2 == "") {
                         return val;
@@ -148,7 +148,7 @@ const Dash = ({ data }) => {
             )}
             {toggleSchedule === true ? (
               <div className="toggle">
-                <p>c</p>
+                <Schedule />
               </div>
             ) : (
               ""

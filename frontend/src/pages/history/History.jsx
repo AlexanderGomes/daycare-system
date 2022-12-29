@@ -17,7 +17,6 @@ const History = () => {
   useEffect(() => {
     const fetchUser = async () => {
       const res = await axios.get(`/api/schedule/${user._id}`);
-      await axios.get(`/api/schedule/payment/user/balance/${user._id}`);
 
       setHistory(
         res.data.sort((p1, p2) => {

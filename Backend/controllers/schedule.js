@@ -47,47 +47,25 @@ const createSchedule = asyncHandler(async (req, res) => {
   }
 });
 
-// -- at a basic level this function do it's job, the only problem is stoping the user --
-// -- from posting the same dates in different orders, for example if you post 12/12/2022 twice --
-// -- is going to throw an error, but if inside of the dates array you keep the same date --
-// -- and add another one with it like: [12/12/2022, 12/13/2022] the code is not gonna detect --
-// -- the duplication.
-
-//low risk function
 const unavailableDates = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.body.userId);
-  const findPreviousSchedule = await Unavailable.find({
-    userId: req.body.userId,
-  });
-
-  const scheduleAvailability = new Unavailable(req.body);
-
-  if (findPreviousSchedule) {
-    let checkSchedule;
-
-    findPreviousSchedule?.map((p) => {
-      //TODO - compare both arrays in a way where if there's one element at both arrays it cancels the function.
-      checkSchedule =
-        scheduleAvailability.dates.toString() == p.dates.toString();
-    });
-
-    if (checkSchedule) {
-      return res.status(400).send({ msg: "dates were taken" });
-    }
-  }
-
+  const newSchedule = new Unavailable(req.body);
   try {
-    if (user.isAdmin) {
-      const saveSchedule = await scheduleAvailability.save();
-      res.status(200).json(saveSchedule);
-    } else {
-      res.status(400).json({ msg: "action is not allowed" });
-    }
+    const savedSchedule = await newSchedule.save();
+
+    res.status(200).json(savedSchedule);
   } catch (error) {
     res.status(400).json(error.message);
   }
 });
 
+const getUnavailableDates = asyncHandler(async (req, res) => {
+  try {
+    const dates = await Unavailable.find();
+    res.status(200).json(dates);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 //high risk function
 const checkInUser = asyncHandler(async (req, res) => {
   const checkInClient = new CheckIn(req.body);
@@ -136,11 +114,11 @@ const checkOutUser = asyncHandler(async (req, res) => {
   const adminUser = await User.findById(req.body.userId);
   const client = await User.findById(req.body.clientId);
 
-  const lastCheckedInTime = await CheckIn.findOne({ clientId: client._id }).sort({
+  const lastCheckedInTime = await CheckIn.findOne({
+    clientId: client._id,
+  }).sort({
     _id: -1,
   });
-
-
 
   try {
     if (adminUser.isAdmin === true) {
@@ -280,4 +258,5 @@ module.exports = {
   getUserData,
   getBalance,
   getCheckIn,
+  getUnavailableDates
 };

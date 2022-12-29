@@ -1,0 +1,10 @@
+.calendar__popup__sch {
+    position: absolute;
+    backdrop-filter: blur(4px);
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+  }
+  

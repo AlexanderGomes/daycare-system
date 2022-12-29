@@ -24,7 +24,7 @@ const Checkout = () => {
   }, [user._id]);
 
   
-console.log(schedule)
+
   let dataArr = Array.from(schedule);
   let result = [];
   let price;
