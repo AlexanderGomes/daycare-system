@@ -1,5 +1,6 @@
 const express = require("express");
-const port = process.env.PORT || 5000;
+const port = process.env.PORTS || 5000;
+
 
 require("dotenv").config();
 const dbConnect = require("./utils/dbConnect");
@@ -27,6 +28,7 @@ app.use((req, res, next) => {
 app.use("/api/user", userRoutes);
 app.use("/api/schedule", scheduleRoutes);
 app.use("/api/payment", stripe);
+
 
 app.listen(port, async () => {
   await dbConnect();

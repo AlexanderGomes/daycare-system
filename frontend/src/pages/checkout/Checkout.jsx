@@ -23,21 +23,22 @@ const Checkout = () => {
     fetchUser();
   }, [user._id]);
 
-  
-
   let dataArr = Array.from(schedule);
   let result = [];
   let price;
   let data = [];
 
+  // pushing total price
   dataArr?.map((p) => {
     if (p.isPaid === false) {
       result.push(p.price);
     }
   });
-  
+
+  //setting price for the "Total price: $" totally apart
   price = result.reduce((a, b) => a + b, 0);
 
+  //pushing the entire object
   dataArr?.map((p) => {
     if (p.isPaid === false) {
       data.push(p);
@@ -75,6 +76,11 @@ const Checkout = () => {
           history?.isPaid === false ? (
             <div className="list__main" key={history._id}>
               <div className="list__info">
+              <div className="list__to">
+                <span className="to">
+                  {history.isAdmin === true ? <p>Check-in Done</p> : ""}
+                </span>
+              </div>
                 <div className="list__from">
                   <span className="from">From: </span>
                   <Moment format="DD/MM/YYYY" className="list__dates">

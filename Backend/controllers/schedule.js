@@ -66,21 +66,18 @@ const getUnavailableDates = asyncHandler(async (req, res) => {
     res.status(400).json(error.message);
   }
 });
-//high risk function
+
+// two payment options, make a schedule before hand and pay it all, or don't make an schedule at all and just pay for the days you get checked-in
 const checkInUser = asyncHandler(async (req, res) => {
   const checkInClient = new CheckIn(req.body);
   const adminUser = await User.findById(req.body.userId);
   const client = await User.findById(req.body.clientId);
   const clientHistory = await CheckIn.find({ clientId: client._id });
+  const ClientSchedule = await Schedule.find({ userId: req.body.clientId });
 
   let compareClientHistory;
-
   let isTaken = false;
 
-  // maping through the client history to get all the start checkin times, if the time we're
-  //writing right now (chechInClient.start) matchs with any of the previous values, it will
-  // push to the result array which means that if there's anything on the result array we have
-  // a collision.
   clientHistory?.map((c) => {
     compareClientHistory =
       c.start.toString() === checkInClient.start.toString();
@@ -96,13 +93,51 @@ const checkInUser = asyncHandler(async (req, res) => {
       .send({ msg: "client is already checked-in at this specific date" });
   }
 
+  //create a schedule if it's not collapsing
+  let isCollapsing = false;
+
+  ClientSchedule.map((schedule) => {
+    if (schedule.isPaid === false) {
+      const date1 = new Date(schedule.start)
+        .toISOString()
+        .slice(0, 10)
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+
+      const date2 = new Date(schedule.end)
+        .toISOString()
+        .slice(0, 10)
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
+
+      const currentDate = req.body.start;
+
+      if (currentDate >= date1 && currentDate <= date2) {
+        isCollapsing = true;
+      }
+    }
+  });
+
   try {
     if (adminUser.isAdmin) {
-      const savedClient = await checkInClient.save();
-      await client.updateOne({
-        $set: { isCheckIn: true },
-      });
-      res.status(200).json(savedClient);
+      if (isCollapsing === false) {
+        const order = new Schedule({
+          userId: client._id,
+          start: req.body.start,
+          end: req.body.start,
+          days: 1,
+          price: 35,
+          isAdmin: true
+        });
+        const savedClient = await checkInClient.save();
+        await client.updateOne({
+          $set: { isCheckIn: true },
+        });
+        await order.save();
+        res.status(200).json(savedClient);
+      } else {
+        res.status(420).send({ msg: "schedule is already done" });
+      }
     }
   } catch (error) {
     res.status(400).json(error.message);
@@ -258,5 +293,5 @@ module.exports = {
   getUserData,
   getBalance,
   getCheckIn,
-  getUnavailableDates
+  getUnavailableDates,
 };

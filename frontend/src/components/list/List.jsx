@@ -8,6 +8,9 @@ const List = ({ history, paid, unpaid }) => {
       {paid && history.isPaid === true ? (
         <div className="list__main">
           <div className="list__info">
+          <div className="list__to">
+              <span className="to">{history.isAdmin === true ? <p>Check-in Done</p> : ''}</span>
+            </div>
             <div className="list__from">
               <span className="from">From: </span>
               <Moment format="DD/MM/YYYY" className="list__dates">
@@ -35,6 +38,9 @@ const List = ({ history, paid, unpaid }) => {
       {unpaid && history?.isPaid === false ? (
         <div className="list__main">
           <div className="list__info">
+          <div className="list__to">
+              <span className="to">{history.isAdmin === true ? <p>Check-in Done</p> : ''}</span>
+            </div>
             <div className="list__from">
               <span className="from">From: </span>
               <Moment format="DD/MM/YYYY" className="list__dates">

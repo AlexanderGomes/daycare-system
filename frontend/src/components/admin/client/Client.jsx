@@ -4,8 +4,6 @@ import "./Client.css";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 
-
-
 const Client = ({ data }) => {
   const { user } = useSelector((state) => state.auth);
 
@@ -16,6 +14,7 @@ const Client = ({ data }) => {
     .replace(/\..+/, "");
 
   const takenCheckin = "Request failed with status code 400";
+  const hasSchedule = "Request failed with status code 420";
 
   const checkIn = async () => {
     try {
@@ -31,8 +30,15 @@ const Client = ({ data }) => {
         window.location.reload();
       }, 1000);
     } catch (err) {
+      console.log(err);
       if (err.message === takenCheckin) {
         toast.error("Check in for the day is done", {
+          duration: 3000,
+        });
+      }
+
+      if (err.message === hasSchedule) {
+        toast.error("the client has a schedule for today", {
           duration: 3000,
         });
       }
