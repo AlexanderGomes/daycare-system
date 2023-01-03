@@ -19,18 +19,13 @@ const Navbar = () => {
       <div className="navbar__icons">
         <ul className="navbar__icons__ul">
           <li>
-            <Link style={{ textDecoration: "none" }} to={"/calendar"}>
+            <a style={{ textDecoration: "none" }} href={"/calendar"}>
               <span className="navbar__schedule color">Calendar</span>
-            </Link>
+            </a>
           </li>
           <li>
             <Link style={{ textDecoration: "none" }} to={"/schedules"}>
               <span className="navbar__history color">History</span>
-            </Link>
-          </li>
-          <li>
-            <Link style={{ textDecoration: "none" }} to={"/"}>
-              <span className="navbar__feed color">Feed</span>
             </Link>
           </li>
           <li>

@@ -11,6 +11,8 @@
   padding: 15px;
   color: rgb(254, 254, 254);
   font-size: 20px;
+  width: 450px;
+  height: 150px;
 }
 
 .client__balance {
@@ -47,4 +49,9 @@
 
 .move {
 left: 0;
+}
+
+.client__blocked {
+  color: rgb(184, 52, 52);
+  font-weight: 600;
 }

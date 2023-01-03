@@ -16,7 +16,7 @@ const CheckIn = ({ data }) => {
   .replace(/T/, " ")
   .replace(/\..+/, "");
   
-
+  
   const { user } = useSelector((state) => state.auth);
 
   const checkOut = async () => {

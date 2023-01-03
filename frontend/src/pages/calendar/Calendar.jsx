@@ -10,9 +10,12 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { Link } from "react-router-dom";
 
 const Calendar = ({ data }) => {
   const [popUp, setPopUp] = useState(false);
+  const [popUpDebt, setPopUpDebt] = useState(true);
+
   const [conf, setConf] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const [available, setUnavailable] = useState([]);
@@ -130,6 +133,8 @@ const Calendar = ({ data }) => {
     }
   });
 
+
+
   return (
     <div className="calendar__color">
       {data.isAdmin === false && popUp === true ? (
@@ -168,27 +173,55 @@ const Calendar = ({ data }) => {
 
       {data.isAdmin === false ? (
         <div className="calendar__main">
-          <div className="calendar__move">
-            <span className="calendar__range">{`${format(
-              date[0].startDate,
-              "MM/dd/yyyy"
-            )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
-            <DateRange
-              editableDateInputs={true}
-              onChange={(item) => setDate([item.selection])}
-              moveRangeOnFirstSelection={false}
-              ranges={date}
-              className="calendar__date"
-              minDate={new Date()}
-              disabledDates={dates}
-            />
-            <button
-              className="register__schedule__btn"
-              onClick={() => setPopUp(true)}
-            >
-              Create Schedule
-            </button>
-          </div>
+          {data.isBlocked === false ? (
+            <div className="calendar__move">
+              <span className="calendar__range">{`${format(
+                date[0].startDate,
+                "MM/dd/yyyy"
+              )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
+              <DateRange
+                editableDateInputs={true}
+                onChange={(item) => setDate([item.selection])}
+                moveRangeOnFirstSelection={false}
+                ranges={date}
+                className="calendar__date"
+                minDate={new Date()}
+                disabledDates={dates}
+              />
+              <button
+                className="register__schedule__btn"
+                onClick={() => setPopUp(true)}
+              >
+                Create Schedule
+              </button>
+            </div>
+          ) : (
+            <div className="register__blocked">
+              {popUpDebt === true && (
+                <div className="calendar__popup__color move">
+                  <div className="calendar__popup__main">
+                    <p className="calendar__p greyish">
+                      <span className="calendar__disclaimer">
+                        {" "}
+                        Disclaimer:{" "}
+                      </span>{" "}
+                   One of your schedules wasn't paid for at least 15 days, you're not allowed to make schedules until you pay your pending balance.
+                    </p>
+                    <div className="calendar__btns">
+                      <Link to={'/checkout'}>
+                        <button
+                          className="refuse__btn__checkout"
+                          onClick={() => setPopUpDebt(false)}
+                        >
+                          Checkout
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : (
         ""

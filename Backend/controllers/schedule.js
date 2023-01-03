@@ -285,6 +285,7 @@ const getUserData = asyncHandler(async (req, res) => {
   }
 });
 
+// here
 // get paid and unpaid balance
 const getBalance = asyncHandler(async (req, res) => {
   const paidBalance = [];
@@ -295,6 +296,10 @@ const getBalance = asyncHandler(async (req, res) => {
   try {
     const previousSchedule = await Schedule.find({ userId: req.params.id });
     const user = await User.findById(req.params.id);
+
+    let isUserBlocked = false;
+    let unblockUserValues = [];
+
     previousSchedule.map((p) => {
       if (p.isPaid === true) {
         paidBalance.push(p.price);
@@ -302,8 +307,37 @@ const getBalance = asyncHandler(async (req, res) => {
 
       if (p.isPaid === false) {
         unpaidBalance.push(p.price);
+
+        const date1 = new Date(p.dueDate)
+          .toISOString()
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        const currentDate = new Date()
+          .toISOString()
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        const blockUserOnDueDate = currentDate === date1;
+        unblockUserValues.push(blockUserOnDueDate);
+
+        if (blockUserOnDueDate === true) {
+          isUserBlocked = true;
+        }
       }
     });
+
+    if (isUserBlocked === true) {
+      await user.updateOne({ $set: { isBlocked: true } });
+    }
+
+    let checker = unblockUserValues.every((v) => v === false);
+
+    if (checker === true) {
+      await user.updateOne({ $set: { isBlocked: false } });
+    }
 
     revenue = paidBalance.reduce((a, b) => a + b, 0);
     unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
@@ -327,7 +361,6 @@ const getCheckIn = asyncHandler(async (req, res) => {
   }
 });
 
-
 module.exports = {
   createSchedule,
   unavailableDates,
@@ -339,5 +372,4 @@ module.exports = {
   getBalance,
   getCheckIn,
   getUnavailableDates,
-
 };

@@ -21,10 +21,12 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { setIn } from "formik";
 
 function App() {
   const [data, setData] = useState([]);
   const { user } = useSelector((state) => state.auth);
+  const [info, setInfo] = useState([]);
 
   const UserById = async () => {
     useEffect(() => {
@@ -46,12 +48,19 @@ function App() {
   useEffect(() => {
     if (user) {
       const fetchUser = async () => {
-        await axios.get(`/api/schedule/payment/user/balance/${user._id}`);
+        const res = await axios.get(
+          `/api/schedule/payment/user/balance/${user._id}`
+        );
+        setInfo(res.data);
       };
 
       fetchUser();
     }
   }, [user]);
+
+  useEffect(() => {
+
+  }, [info, user])
 
   const ProtectedRoute = ({ children }) => {
     if (data.isAdmin === false) {

@@ -92,6 +92,15 @@
   cursor: pointer;
 }
 
+.refuse__btn__checkout {
+  height: 30px;
+  width: 200px;
+  border-radius: 12px;
+  background-color: rgb(246, 73, 73);
+  color: white;
+  cursor: pointer;
+}
+
 .calendar__disclaimer {
   color: rgba(250, 0, 0, 0.657);
 }

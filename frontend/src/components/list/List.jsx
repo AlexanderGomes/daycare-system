@@ -84,9 +84,8 @@ const List = ({ history, paid, unpaid }) => {
             </div>
             <div className="list__to">
               <span className="from">Due date: </span>
-
               <Moment format="DD/MM/YYYY" className="list__dates">
-                {history.dueDate}
+                {history.end}
               </Moment>
             </div>
           </div>

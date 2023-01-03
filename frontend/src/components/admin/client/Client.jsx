@@ -76,9 +76,13 @@ const Client = ({ data }) => {
       {data.isAdmin === false && popUp === true ? (
         <div className="calendar__popup__color move">
           <div className="calendar__popup__main">
-            <p className="calendar__p">are you sure about it's the right client?</p>
+            <p className="calendar__p">
+              are you sure about it's the right client?
+            </p>
             <p className="calendar__p greyish">
-              <span className="calendar__disclaimer"> Disclaimer: </span> any mistake will result in financial damage to both the client and the daycare
+              <span className="calendar__disclaimer"> Disclaimer: </span> any
+              mistake will result in financial damage to both the client and the
+              daycare
             </p>
             <p className="calendar__p greyish">$35 per kid</p>
             <input
@@ -106,9 +110,13 @@ const Client = ({ data }) => {
       {data.isCheckIn === false && data.isAdmin === false ? (
         <div className="client__color">
           <p className="client__name">{data.name}</p>
-          <button className="check__btn" onClick={() => setPopUp(true)}>
-            Check-in
-          </button>
+          {data.isBlocked === false ? (
+            <button className="check__btn" onClick={() => setPopUp(true)}>
+              Check-in
+            </button>
+          ) : (
+            <p className="client__unpaid">user is blocked!! pending balance of 15 days</p>
+          )}
           <p className="client__email">{data.email}</p>
           <div className="client__balance">
             <p className="client__paid">
