@@ -205,10 +205,12 @@ const Calendar = ({ data }) => {
                         {" "}
                         Disclaimer:{" "}
                       </span>{" "}
-                   One of your schedules wasn't paid for at least 15 days, you're not allowed to make schedules until you pay your pending balance.
+                      One of your schedules wasn't paid for at least 15 days,
+                      you're not allowed to make schedules until you pay your
+                      pending balance.
                     </p>
                     <div className="calendar__btns">
-                      <Link to={'/checkout'}>
+                      <Link to={"/checkout"}>
                         <button
                           className="refuse__btn__checkout"
                           onClick={() => setPopUpDebt(false)}

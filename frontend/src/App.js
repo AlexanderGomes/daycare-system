@@ -58,9 +58,6 @@ function App() {
     }
   }, [user]);
 
-  useEffect(() => {
-
-  }, [info, user])
 
   const ProtectedRoute = ({ children }) => {
     if (data.isAdmin === false) {
