@@ -40,6 +40,7 @@ router.post("/create-checkout-session", async (req, res) => {
     result.push(p.price_data.product_data.metadata.schedule_id);
   });
 
+
   const session = await stripe.checkout.sessions.create({
     phone_number_collection: {
       enabled: true,

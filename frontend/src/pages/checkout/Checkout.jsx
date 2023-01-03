@@ -77,6 +77,9 @@ const Checkout = () => {
             <div className="list__main" key={history._id}>
               <div className="list__info">
               <div className="list__to">
+              <span className="from">{history.isLate === true ? <p>late payment!! + $15</p> : ''}</span>
+            </div>
+              <div className="list__to">
                 <span className="to">
                   {history.isAdmin === true ? <p>Check-in Done</p> : ""}
                 </span>

@@ -17,16 +17,23 @@ const scheduleSchema = mongoose.Schema(
     days: {
       type: Number,
     },
+    kids: {
+      type: Number,
+    },
     price: {
       type: Number,
     },
     isPaid: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isAdmin: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    isLate: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

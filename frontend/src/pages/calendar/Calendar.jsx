@@ -8,6 +8,8 @@ import { format } from "date-fns";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const Calendar = ({ data }) => {
   const [popUp, setPopUp] = useState(false);
@@ -30,6 +32,15 @@ const Calendar = ({ data }) => {
     },
   ]);
 
+  const formik = useFormik({
+    initialValues: {
+      kids: 1,
+    },
+    validationSchema: Yup.object({
+      kids: Yup.string().required("number of kids is required"),
+    }),
+  });
+
   const MILLISECONDS_PER_DAY = 1000 * 60 * 60 * 24;
   function dayDifference(date1, date2) {
     const timeDiff = Math.abs(date2?.getTime() - date1?.getTime());
@@ -37,7 +48,7 @@ const Calendar = ({ data }) => {
     return diffDays;
   }
 
-  const days = dayDifference(date[0].endDate, date[0].startDate);
+  const days = dayDifference(date[0].endDate, date[0].startDate) + 1;
 
   const takenScheduleMessage = "Request failed with status code 400";
 
@@ -62,7 +73,8 @@ const Calendar = ({ data }) => {
           start: date[0].startDate,
           end: date[0].startDate,
           days: 1,
-          price: 35,
+          price: 35 * formik.values.kids,
+          kids: formik.values.kids,
         });
       } else {
         await axios.post("/api/schedule", {
@@ -70,7 +82,8 @@ const Calendar = ({ data }) => {
           start: date[0].startDate,
           end: date[0].endDate,
           days: days,
-          price: 35 * days,
+          price: 35 * days * formik.values.kids,
+          kids: formik.values.kids,
         });
       }
       toast.success("Schedule Created", {
@@ -111,9 +124,6 @@ const Calendar = ({ data }) => {
     }
   });
 
-
-
-
   return (
     <div className="calendar__color">
       {data.isAdmin === false && popUp === true ? (
@@ -126,6 +136,16 @@ const Calendar = ({ data }) => {
               the day will be required after so. You get charged $35 per day
               that you get checked-in by one of our employees.
             </p>
+            <p className="calendar__p greyish">$35 per kid</p>
+            <input
+              type="number"
+              id="kids"
+              name="kids"
+              placeholder="kids"
+              onBlur={formik.handleBlur}
+              value={formik.values.kids}
+              onChange={formik.handleChange}
+            />
             <div className="calendar__btns">
               <button className="confirm__btn" onClick={confirm}>
                 yes

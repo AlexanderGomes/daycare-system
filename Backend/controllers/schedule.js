@@ -15,16 +15,32 @@ const createSchedule = asyncHandler(async (req, res) => {
   const previousSchedule = await Schedule.find({ userId: req.body.userId });
   const user = await User.findById(req.body.userId);
 
-  let compareStartValues;
-  let compareEndValues;
+
   let isTaken = false;
 
   previousSchedule?.map((p) => {
-    compareStartValues = p.start.toString() === newSchedule.start.toString();
-    compareEndValues = p?.end?.toString() === newSchedule?.end?.toString();
+    const date1 = new Date(p.start)
+    .toISOString()
+    .slice(0, 10)
+    .replace(/T/, " ")
+    .replace(/\..+/, "");
 
-    if (compareStartValues || compareEndValues === true) {
-      isTaken = true;
+  const date2 = new Date(p.end)
+    .toISOString()
+    .slice(0, 10)
+    .replace(/T/, " ")
+    .replace(/\..+/, "");
+
+  const currentDateStart = new Date(req.body.start)
+    .toISOString()
+    .slice(0, 10)
+    .replace(/T/, " ")
+    .replace(/\..+/, "");
+
+   
+
+    if(currentDateStart >= date1 && currentDateStart <= date2) {
+    isTaken = true
     }
   });
 
@@ -110,7 +126,11 @@ const checkInUser = asyncHandler(async (req, res) => {
         .replace(/T/, " ")
         .replace(/\..+/, "");
 
-      const currentDate = req.body.start;
+      const currentDate = new Date(req.body.start)
+        .toISOString()
+        .slice(0, 10)
+        .replace(/T/, " ")
+        .replace(/\..+/, "");
 
       if (currentDate >= date1 && currentDate <= date2) {
         isCollapsing = true;
@@ -126,8 +146,9 @@ const checkInUser = asyncHandler(async (req, res) => {
           start: req.body.start,
           end: req.body.start,
           days: 1,
-          price: 35,
-          isAdmin: true
+          price: 35 * req.body.kids,
+          kids: req.body.kids,
+          isAdmin: true,
         });
         const savedClient = await checkInClient.save();
         await client.updateOne({
@@ -145,15 +166,29 @@ const checkInUser = asyncHandler(async (req, res) => {
 });
 
 //high risk function
+
+//set schedule as late if it's past 6:15
 const checkOutUser = asyncHandler(async (req, res) => {
   const adminUser = await User.findById(req.body.userId);
   const client = await User.findById(req.body.clientId);
+  const schedule = await Schedule.findOne({
+    userId: client._id,
+    isAdmin: true,
+  }).sort({
+    _id: -1,
+  });
 
   const lastCheckedInTime = await CheckIn.findOne({
     clientId: client._id,
   }).sort({
     _id: -1,
   });
+
+  let currentDate = new Date();
+  const time = currentDate
+    .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    .slice(10, 14);
+  const lateTime = "6:15";
 
   try {
     if (adminUser.isAdmin === true) {
@@ -164,6 +199,12 @@ const checkOutUser = asyncHandler(async (req, res) => {
         { $set: { end: req.body.end } },
         { new: true }
       );
+
+      if (time >= lateTime) {
+        await schedule.updateOne({ $set: { isLate: true } }, { new: true });
+        await schedule.updateOne({ $inc: { 'price': 15 } }, { new: true });
+      }
+
       res.status(200).json(lastCheckedInTime);
     }
   } catch (error) {
@@ -282,6 +323,9 @@ const getCheckIn = asyncHandler(async (req, res) => {
     res.status(400).json(error.message);
   }
 });
+
+//TODO -- mark client's that do have a schedule late
+// -- deal with pending balance from clients
 
 module.exports = {
   createSchedule,

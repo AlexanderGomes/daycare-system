@@ -19,6 +19,7 @@ const checkInSchema = mongoose.Schema(
     end: {
       type: Date,
     },
+    
   },
   { timestamps: true }
 );

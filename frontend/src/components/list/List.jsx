@@ -8,8 +8,15 @@ const List = ({ history, paid, unpaid }) => {
       {paid && history.isPaid === true ? (
         <div className="list__main">
           <div className="list__info">
-          <div className="list__to">
-              <span className="to">{history.isAdmin === true ? <p>Check-in Done</p> : ''}</span>
+            <div className="list__to">
+              <span className="from">
+                {history.isLate === true ? <p>late payment!! + $15</p> : ""}
+              </span>
+            </div>
+            <div className="list__to">
+              <span className="to">
+                {history.isAdmin === true ? <p>Check-in Done</p> : ""}
+              </span>
             </div>
             <div className="list__from">
               <span className="from">From: </span>
@@ -28,6 +35,9 @@ const List = ({ history, paid, unpaid }) => {
             </div>
             <div className="list__to">
               <span className="to">Price: ${history?.price} </span>
+            </div>
+            <div className="list__to">
+            <span className="to">kids: {history?.kids ? history.kids : 0} </span>
             </div>
           </div>
         </div>
@@ -38,8 +48,19 @@ const List = ({ history, paid, unpaid }) => {
       {unpaid && history?.isPaid === false ? (
         <div className="list__main">
           <div className="list__info">
-          <div className="list__to">
-              <span className="to">{history.isAdmin === true ? <p>Check-in Done</p> : ''}</span>
+            <div className="list__to">
+              <span className="from">
+                {history.isLate === true ? <p>late payment!! + $15</p> : ""}
+              </span>
+            </div>
+            <div className="list__to">
+              <span className="to">
+                {history.isAdmin === true ? (
+                  <p>Check-in Done by daycare</p>
+                ) : (
+                  ""
+                )}
+              </span>
             </div>
             <div className="list__from">
               <span className="from">From: </span>
@@ -58,6 +79,9 @@ const List = ({ history, paid, unpaid }) => {
             </div>
             <div className="list__to">
               <span className="to">Price: ${history?.price} </span>
+            </div>
+            <div className="list__to">
+              <span className="to">kids: {history?.kids ? history.kids : 0} </span>
             </div>
           </div>
         </div>
