@@ -16,7 +16,6 @@ const Calendar = ({ data }) => {
   const [conf, setConf] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const [available, setUnavailable] = useState([]);
-  const [a, setA] = useState([]);
 
   const navigate = useNavigate();
 
