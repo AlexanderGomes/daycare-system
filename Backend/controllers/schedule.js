@@ -15,32 +15,29 @@ const createSchedule = asyncHandler(async (req, res) => {
   const previousSchedule = await Schedule.find({ userId: req.body.userId });
   const user = await User.findById(req.body.userId);
 
-
   let isTaken = false;
 
   previousSchedule?.map((p) => {
     const date1 = new Date(p.start)
-    .toISOString()
-    .slice(0, 10)
-    .replace(/T/, " ")
-    .replace(/\..+/, "");
+      .toISOString()
+      .slice(0, 10)
+      .replace(/T/, " ")
+      .replace(/\..+/, "");
 
-  const date2 = new Date(p.end)
-    .toISOString()
-    .slice(0, 10)
-    .replace(/T/, " ")
-    .replace(/\..+/, "");
+    const date2 = new Date(p.end)
+      .toISOString()
+      .slice(0, 10)
+      .replace(/T/, " ")
+      .replace(/\..+/, "");
 
-  const currentDateStart = new Date(req.body.start)
-    .toISOString()
-    .slice(0, 10)
-    .replace(/T/, " ")
-    .replace(/\..+/, "");
+    const currentDateStart = new Date(req.body.start)
+      .toISOString()
+      .slice(0, 10)
+      .replace(/T/, " ")
+      .replace(/\..+/, "");
 
-   
-
-    if(currentDateStart >= date1 && currentDateStart <= date2) {
-    isTaken = true
+    if (currentDateStart >= date1 && currentDateStart <= date2) {
+      isTaken = true;
     }
   });
 
@@ -202,7 +199,7 @@ const checkOutUser = asyncHandler(async (req, res) => {
 
       if (time >= lateTime) {
         await schedule.updateOne({ $set: { isLate: true } }, { new: true });
-        await schedule.updateOne({ $inc: { 'price': 15 } }, { new: true });
+        await schedule.updateOne({ $inc: { price: 15 } }, { new: true });
       }
 
       res.status(200).json(lastCheckedInTime);
@@ -227,7 +224,7 @@ const paidSchedules = asyncHandler(async (req, res) => {
   let unpaid = [];
   let revenue;
   let valueOfUnpaid;
-  let lateSchedules = []
+  let lateSchedules = [];
 
   try {
     const schedules = await Schedule.find();
@@ -238,9 +235,9 @@ const paidSchedules = asyncHandler(async (req, res) => {
       } else {
         unpaid.push(s.price);
       }
-      
-      if(s.isLate === true) {
-      lateSchedules.push(s.price)
+
+      if (s.isLate === true) {
+        lateSchedules.push(s.price);
       }
     });
 
@@ -331,10 +328,6 @@ const getCheckIn = asyncHandler(async (req, res) => {
 });
 
 
-
-// -- deal with pending balance from clients
-
-
 module.exports = {
   createSchedule,
   unavailableDates,
@@ -346,4 +339,5 @@ module.exports = {
   getBalance,
   getCheckIn,
   getUnavailableDates,
+
 };

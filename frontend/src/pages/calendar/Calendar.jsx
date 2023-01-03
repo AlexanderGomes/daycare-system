@@ -16,6 +16,8 @@ const Calendar = ({ data }) => {
   const [conf, setConf] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const [available, setUnavailable] = useState([]);
+  const [a, setA] = useState([]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -65,6 +67,9 @@ const Calendar = ({ data }) => {
     fetchUser();
   }, [user._id]);
 
+  const dueDate = new Date(date[0].endDate);
+  dueDate.setDate(dueDate.getDate() + 15);
+
   const CreateSchedule = async () => {
     try {
       if (date[0].startDate === date[0].endDate) {
@@ -75,6 +80,7 @@ const Calendar = ({ data }) => {
           days: 1,
           price: 35 * formik.values.kids,
           kids: formik.values.kids,
+          dueDate: dueDate,
         });
       } else {
         await axios.post("/api/schedule", {
@@ -84,7 +90,7 @@ const Calendar = ({ data }) => {
           days: days,
           price: 35 * days * formik.values.kids,
           kids: formik.values.kids,
-          dueDate: date[0].endDate,
+          dueDate: dueDate,
         });
       }
       toast.success("Schedule Created", {

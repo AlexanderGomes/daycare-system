@@ -32,6 +32,7 @@ const userSchema = mongoose.Schema(
       type: Array,
       default: [],
     },
+
     hasSchedule: {
       type: Boolean,
       default: false,
