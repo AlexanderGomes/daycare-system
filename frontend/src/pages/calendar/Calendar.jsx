@@ -84,6 +84,7 @@ const Calendar = ({ data }) => {
           days: days,
           price: 35 * days * formik.values.kids,
           kids: formik.values.kids,
+          dueDate: date[0].endDate,
         });
       }
       toast.success("Schedule Created", {

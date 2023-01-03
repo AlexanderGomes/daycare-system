@@ -14,6 +14,9 @@ const scheduleSchema = mongoose.Schema(
     end: {
       type: Date,
     },
+    dueDate: {
+      type: Date,
+    },
     days: {
       type: Number,
     },

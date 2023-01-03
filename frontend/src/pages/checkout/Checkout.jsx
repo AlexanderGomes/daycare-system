@@ -76,14 +76,16 @@ const Checkout = () => {
           history?.isPaid === false ? (
             <div className="list__main" key={history._id}>
               <div className="list__info">
-              <div className="list__to">
-              <span className="from">{history.isLate === true ? <p>late payment!! + $15</p> : ''}</span>
-            </div>
-              <div className="list__to">
-                <span className="to">
-                  {history.isAdmin === true ? <p>Check-in Done</p> : ""}
-                </span>
-              </div>
+                <div className="list__to">
+                  <span className="from">
+                    {history.isLate === true ? <p>late payment!! + $15</p> : ""}
+                  </span>
+                </div>
+                <div className="list__to">
+                  <span className="to">
+                    {history.isAdmin === true ? <p>Check-in Done</p> : ""}
+                  </span>
+                </div>
                 <div className="list__from">
                   <span className="from">From: </span>
                   <Moment format="DD/MM/YYYY" className="list__dates">
@@ -101,6 +103,17 @@ const Checkout = () => {
                 </div>
                 <div className="list__to">
                   <span className="to">Price: ${history?.price} </span>
+                </div>
+                <div className="list__to">
+                  <span className="to">
+                    kids: {history?.kids ? history.kids : 0}{" "}
+                  </span>
+                </div>
+                <div className="list__to">
+                  <span className="from">Due date: </span>
+                  <Moment format="DD/MM/YYYY" className="list__dates">
+                    {history.dueDate}
+                  </Moment>
                 </div>
               </div>
             </div>

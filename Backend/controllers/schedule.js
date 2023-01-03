@@ -227,6 +227,7 @@ const paidSchedules = asyncHandler(async (req, res) => {
   let unpaid = [];
   let revenue;
   let valueOfUnpaid;
+  let lateSchedules = []
 
   try {
     const schedules = await Schedule.find();
@@ -236,6 +237,10 @@ const paidSchedules = asyncHandler(async (req, res) => {
         paid.push(s.price);
       } else {
         unpaid.push(s.price);
+      }
+      
+      if(s.isLate === true) {
+      lateSchedules.push(s.price)
       }
     });
 
@@ -249,6 +254,7 @@ const paidSchedules = asyncHandler(async (req, res) => {
         numberOfUnpaidSchedules: unpaid.length,
         valueOfUnpaid: valueOfUnpaid,
         allSchedules: schedules.length,
+        late: lateSchedules.length,
       },
     ]);
   } catch (error) {
@@ -324,8 +330,10 @@ const getCheckIn = asyncHandler(async (req, res) => {
   }
 });
 
-//TODO -- mark client's that do have a schedule late
+
+
 // -- deal with pending balance from clients
+
 
 module.exports = {
   createSchedule,

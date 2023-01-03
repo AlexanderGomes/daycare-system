@@ -74,7 +74,7 @@ const Client = ({ data }) => {
   return (
     <div className="client__main">
       {data.isAdmin === false && popUp === true ? (
-        <div className="calendar__popup__color">
+        <div className="calendar__popup__color move">
           <div className="calendar__popup__main">
             <p className="calendar__p">are you sure about it's the right client?</p>
             <p className="calendar__p greyish">
