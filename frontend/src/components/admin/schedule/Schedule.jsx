@@ -141,6 +141,7 @@ const Schedule = () => {
             date[0].startDate,
             "MM/dd/yyyy"
           )} to ${format(date[0].endDate, "MM/dd/yyyy")}`}</span>
+        <p className="unavailable__dates">Set the dates that the daycare won't be open.</p>
           <DateRange
             editableDateInputs={true}
             onChange={(item) => setDate([item.selection])}

@@ -8,3 +8,10 @@
     z-index: 1;
   }
   
+
+  .unavailable__dates {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(5, 57, 90, 0.667);
+    margin-bottom: 20px;
+  }

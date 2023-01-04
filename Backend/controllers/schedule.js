@@ -419,11 +419,14 @@ const getBalance = asyncHandler(async (req, res) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
+        revenue = paidBalance.reduce((a, b) => a + b, 0);
+        unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
+
         if (date3Warning === date2) {
           //messaging client 5 days before account gets block for lack of payment
           client.messages
             .create({
-              body: `GOMES DAYCARE: ${user.name} you have a pending balance of $${unpaidBalance} for the past 10 days, in five days you won't be able to create a schedule, or to do the check in at the day care until the payment is done.`,
+              body: `GOMES DAYCARE: ${user.name} you have a pending balance of $${unpaid} for the past 10 days, in five days you won't be able to create a schedule, or to do the check in at the day care until the payment is done.`,
               from: "+12515128063",
               to: `${user.phoneNumber}`,
             })
@@ -432,9 +435,6 @@ const getBalance = asyncHandler(async (req, res) => {
         }
       }
     });
-
-    revenue = paidBalance.reduce((a, b) => a + b, 0);
-    unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
 
     if (isUserBlocked === true) {
       client.messages
