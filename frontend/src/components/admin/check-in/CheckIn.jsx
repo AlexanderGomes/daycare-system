@@ -9,17 +9,16 @@ import "./CheckIn.css";
 const CheckIn = ({ data }) => {
   const [users, setUsers] = useState([]);
 
-
   let currentDate = new Date();
   const time = currentDate
     .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
     .slice(0, 8);
 
-
   const { user } = useSelector((state) => state.auth);
 
   const checkOut = async () => {
     try {
+      await axios.get(`/api/schedule/payment/user/balance/${data._id}`)
       await axios.put("/api/schedule/checkout", {
         userId: user._id,
         clientId: data._id,

@@ -104,7 +104,8 @@ const fulfillOrder = async () => {
       .then((message) => console.log(message.sid))
       .catch((err) => console.log(err));
   });
-  
+
+  userInfo = [];
 };
 
 router.post(

@@ -28,11 +28,6 @@ const AdminNavbar = () => {
               <span className="navbar__feed color">Management</span>
             </Link>
           </li>
-          <li>
-            <Link style={{ textDecoration: "none" }} to={"/checkout"}>
-              <span className="navbar__pay color">Notifications</span>
-            </Link>
-          </li>
         </ul>
       </div>
 
@@ -52,11 +47,15 @@ const AdminNavbar = () => {
               <div className="toggle__icons">
                 <ul className="toggle__icons__ul">
                   <li>
-                    <Link style={{ textDecoration: "none" }} to={"/admin/history"}>
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to={"/admin/history"}
+                    >
                       <span className="navbar__history color" onClick={close}>
                         History
                         <p className="toggle__details">
-                         sell all the bussiness data, active users, pending values and much more...
+                          sell all the bussiness data, active users, pending
+                          values and much more...
                         </p>
                       </span>
                     </Link>
@@ -64,19 +63,11 @@ const AdminNavbar = () => {
                   <li>
                     <Link style={{ textDecoration: "none" }} to={"/admin"}>
                       <span className="navbar__feed color" onClick={close}>
-                      Management
+                        Management
                         <p className="toggle__details">
                           daily content about the activities that the kids are
                           doing, gentle parenting and much more...
                         </p>
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link style={{ textDecoration: "none" }} to={"/checkout"}>
-                      <span className="navbar__pay color" onClick={close}>
-                        Notifications
-                        <p className="toggle__details">payment...</p>
                       </span>
                     </Link>
                   </li>

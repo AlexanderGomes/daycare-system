@@ -76,7 +76,6 @@ const Client = ({ data }) => {
     .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
     .slice(10, 20);
 
-
   return (
     <div className="client__main">
       {data.isAdmin === false && popUp === true ? (

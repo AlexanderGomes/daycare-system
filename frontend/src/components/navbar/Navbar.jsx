@@ -70,17 +70,7 @@ const Navbar = () => {
                       </span>
                     </Link>
                   </li>
-                  <li>
-                    <Link style={{ textDecoration: "none" }} to={"/"}>
-                      <span className="navbar__feed color" onClick={close}>
-                        Feed
-                        <p className="toggle__details">
-                          daily content about the activities that the kids are
-                          doing, gentle parenting and much more...
-                        </p>
-                      </span>
-                    </Link>
-                  </li>
+                 
                   <li>
                     <Link style={{ textDecoration: "none" }} to={"/checkout"}>
                       <span className="navbar__pay color" onClick={close}>

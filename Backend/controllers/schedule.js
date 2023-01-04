@@ -173,7 +173,10 @@ const checkInUser = asyncHandler(async (req, res) => {
   let currentDates = new Date();
   const times = currentDates
     .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
-    .slice(10, 20);
+    .slice(10, 21);
+
+  const dueDate = new Date(req.body.start);
+  dueDate.setDate(dueDate.getDate() + 15);
 
   try {
     if (adminUser.isAdmin) {
@@ -186,6 +189,7 @@ const checkInUser = asyncHandler(async (req, res) => {
           price: 35 * req.body.kids,
           kids: req.body.kids,
           isAdmin: true,
+          dueDate: dueDate,
         });
         const savedClient = await checkInClient.save();
         await clients.updateOne({
@@ -414,20 +418,108 @@ const getBalance = asyncHandler(async (req, res) => {
           .slice(0, 10)
           .replace(/T/, " ")
           .replace(/\..+/, "");
-const fake = '2023-02-07'
 
-let alloweMessage = true
-
-        if (date3Warning === fake && alloweMessage) {
+        if (date3Warning === date2) {
           //messaging client 5 days before account gets block for lack of payment
           client.messages
             .create({
-              body: `GOMES DAYCRE: ${user.name} you have a pending balance of $${unpaidBalance} for the past 10 days, in five days you won't be able to create a schedule, or to do the check in at the day care until the payment is done.`,
+              body: `GOMES DAYCARE: ${user.name} you have a pending balance of $${unpaidBalance} for the past 10 days, in five days you won't be able to create a schedule, or to do the check in at the day care until the payment is done.`,
               from: "+12515128063",
               to: `${user.phoneNumber}`,
             })
             .then((message) => console.log(message.sid))
             .catch((err) => console.log(err));
+        }
+      }
+    });
+
+    revenue = paidBalance.reduce((a, b) => a + b, 0);
+    unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
+
+    if (isUserBlocked === true) {
+      client.messages
+        .create({
+          body: `GOMES DAYCARE: ${user.name} you have a pending balance of $${unpaid} for the past 15 days, you're not able to create schedules or to be checked-in at the day care until you pay your balance`,
+          from: "+12515128063",
+          to: `${user.phoneNumber}`,
+        })
+        .then((message) => console.log(message.sid))
+        .catch((err) => console.log(err));
+      await user.updateOne({ $set: { isBlocked: true } });
+    }
+
+    let checker = unblockUserValues.every((v) => v === false);
+
+    if (checker === true) {
+      await user.updateOne({ $set: { isBlocked: false } });
+    }
+
+    await user.updateOne({
+      $set: { paidBalance: revenue, unpaidBalance: unpaid },
+    });
+
+    res.status(200).json([{ paidBalance: revenue, unpaidBalance: unpaid }]);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+const getCheckIn = asyncHandler(async (req, res) => {
+  try {
+    const checkin = await CheckIn.find();
+    res.status(200).json(checkin);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+const updateClient = asyncHandler(async (req, res) => {
+  const paidBalance = [];
+  let revenue;
+  const unpaidBalance = [];
+  let unpaid;
+
+  try {
+    const previousSchedule = await Schedule.find({ userId: req.params.id });
+    const user = await User.findById(req.params.id);
+
+    let isUserBlocked = false;
+    let unblockUserValues = [];
+
+    previousSchedule.map((p) => {
+      if (p.isPaid === true) {
+        paidBalance.push(p.price);
+      }
+
+      if (p.isPaid === false) {
+        unpaidBalance.push(p.price);
+
+        const date1 = new Date(p.dueDate)
+          .toISOString()
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        let currentDate = new Date();
+        const time = currentDate
+          .toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+          })
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        const date2 = new Date(time)
+          .toISOString()
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        const blockUserOnDueDate = date2 === date1;
+        unblockUserValues.push(blockUserOnDueDate);
+
+        if (blockUserOnDueDate === true) {
+          isUserBlocked = true;
         }
       }
     });
@@ -455,15 +547,6 @@ let alloweMessage = true
   }
 });
 
-const getCheckIn = asyncHandler(async (req, res) => {
-  try {
-    const checkin = await CheckIn.find();
-    res.status(200).json(checkin);
-  } catch (error) {
-    res.status(400).json(error.message);
-  }
-});
-
 module.exports = {
   createSchedule,
   unavailableDates,
@@ -475,4 +558,5 @@ module.exports = {
   getBalance,
   getCheckIn,
   getUnavailableDates,
+  updateClient,
 };

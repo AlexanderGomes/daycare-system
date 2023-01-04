@@ -11,6 +11,7 @@ const {
   getUserData,
   getBalance,
   getCheckIn,
+  updateClient,
   getUnavailableDates,
 } = require("../controllers/schedule");
 
@@ -22,6 +23,7 @@ router.get("/:userId", getAllSchedule);
 router.get("/payment/history", paidSchedules);
 router.get("/payment/history/user", getUserData);
 router.get("/payment/user/balance/:id", getBalance);
+router.get("/payment/user/balance/update/:id", updateClient)
 router.get("/checkin/data", getCheckIn);
 router.get("/admin/dates/available", getUnavailableDates);
 

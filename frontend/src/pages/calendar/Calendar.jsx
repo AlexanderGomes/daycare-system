@@ -95,6 +95,7 @@ const Calendar = ({ data }) => {
           dueDate: dueDate,
         });
       }
+      await axios.get(`/api/schedule/payment/user/balance/${user._id}`)
       toast.success("Schedule Created", {
         duration: 3000,
       });
@@ -132,20 +133,6 @@ const Calendar = ({ data }) => {
       left++;
     }
   });
-
-  // useEffect(() => {
-  
-  //     const fetchUser = async () => {
-  //       const res = await axios.get(
-  //         `/api/schedule/payment/user/balance/${user._id}`
-  //       );
-  //     };
-
-  //     fetchUser();
-    
-  // }, []);
-
- 
 
   return (
     <div className="calendar__color">

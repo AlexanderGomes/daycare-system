@@ -22,7 +22,6 @@ import {
   Navigate,
 } from "react-router-dom";
 
-
 function App() {
   const [data, setData] = useState([]);
   const { user } = useSelector((state) => state.auth);
@@ -42,10 +41,14 @@ function App() {
       }
     }, [user]);
   };
-
   UserById();
 
- 
+  useEffect(() => {
+    const fetchUpdate = async () => {
+      await axios.get(`/api/schedule/payment/user/balance/update/${user._id}`);
+    };
+    fetchUpdate();
+  }, [data]);
 
   const ProtectedRoute = ({ children }) => {
     if (data.isAdmin === false) {
