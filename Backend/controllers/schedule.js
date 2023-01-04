@@ -2,9 +2,11 @@ const Schedule = require("../models/schedule");
 const User = require("../models/user");
 const Unavailable = require("../models/unavailable.dates");
 const CheckIn = require("../models/check-in");
-
 const asyncHandler = require("express-async-handler");
 const dbConnect = require("../utils/dbConnect");
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
 
 dbConnect();
 
@@ -54,6 +56,39 @@ const createSchedule = asyncHandler(async (req, res) => {
       { $push: { activity: savedSchedule._id } },
       { new: true }
     );
+
+    const begin = new Date(req.body.start)
+      .toISOString()
+      .slice(0, 10)
+      .replace(/T/, " ")
+      .replace(/\..+/, "");
+
+    const finish = new Date(req.body.end)
+      .toISOString()
+      .slice(0, 10)
+      .replace(/T/, " ")
+      .replace(/\..+/, "");
+
+    //messaging the admin
+    client.messages
+      .create({
+        body: `GOMES DAYCARE: schedule created by client ${user.name} from ${begin} to ${finish}`,
+        from: "+12515128063",
+        to: `+15106305188`,
+      })
+      .then((message) => console.log(message.sid))
+      .catch((err) => console.log(err));
+
+    //messaging the client
+    client.messages
+      .create({
+        body: `GOMES DAYCARE: schedule confirmation, dates:  from ${begin} to ${finish}`,
+        from: "+12515128063",
+        to: `${user.phoneNumber}`,
+      })
+      .then((message) => console.log(message.sid))
+      .catch((err) => console.log(err));
+
     res.status(200).json(savedSchedule);
   } catch (error) {
     res.status(400).json(error.message);
@@ -84,7 +119,7 @@ const getUnavailableDates = asyncHandler(async (req, res) => {
 const checkInUser = asyncHandler(async (req, res) => {
   const checkInClient = new CheckIn(req.body);
   const adminUser = await User.findById(req.body.userId);
-  const client = await User.findById(req.body.clientId);
+  const clients = await User.findById(req.body.clientId);
   const clientHistory = await CheckIn.find({ clientId: client._id });
   const ClientSchedule = await Schedule.find({ userId: req.body.clientId });
 
@@ -135,11 +170,16 @@ const checkInUser = asyncHandler(async (req, res) => {
     }
   });
 
+  let currentDates = new Date();
+  const times = currentDates
+    .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    .slice(10, 20);
+
   try {
     if (adminUser.isAdmin) {
       if (isCollapsing === false) {
         const order = new Schedule({
-          userId: client._id,
+          userId: clients._id,
           start: req.body.start,
           end: req.body.start,
           days: 1,
@@ -148,10 +188,20 @@ const checkInUser = asyncHandler(async (req, res) => {
           isAdmin: true,
         });
         const savedClient = await checkInClient.save();
-        await client.updateOne({
+        await clients.updateOne({
           $set: { isCheckIn: true },
         });
         await order.save();
+
+        //messaging client
+        client.messages
+          .create({
+            body: `Gomes Daycare: check-in confirmation date: ${req.body.start}, time: ${times}`,
+            from: "+12515128063",
+            to: `${clients.phoneNumber}`,
+          })
+          .then((message) => console.log(message.sid))
+          .catch((err) => console.log(err));
         res.status(200).json(savedClient);
       } else {
         res.status(420).send({ msg: "schedule is already done" });
@@ -167,16 +217,16 @@ const checkInUser = asyncHandler(async (req, res) => {
 //set schedule as late if it's past 6:15
 const checkOutUser = asyncHandler(async (req, res) => {
   const adminUser = await User.findById(req.body.userId);
-  const client = await User.findById(req.body.clientId);
+  const clients = await User.findById(req.body.clientId);
   const schedule = await Schedule.findOne({
-    userId: client._id,
+    userId: clients._id,
     isAdmin: true,
   }).sort({
     _id: -1,
   });
 
   const lastCheckedInTime = await CheckIn.findOne({
-    clientId: client._id,
+    clientId: clients._id,
   }).sort({
     _id: -1,
   });
@@ -187,9 +237,20 @@ const checkOutUser = asyncHandler(async (req, res) => {
     .slice(10, 14);
   const lateTime = "6:15";
 
+  let currentDates = new Date();
+  const times = currentDates
+    .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    .slice(10, 20);
+
+  let late = "";
+
+  if (time >= lateTime) {
+    late = "late pickup";
+  }
+
   try {
     if (adminUser.isAdmin === true) {
-      await client.updateOne({
+      await clients.updateOne({
         $set: { isCheckIn: false },
       });
       await lastCheckedInTime.updateOne(
@@ -202,6 +263,15 @@ const checkOutUser = asyncHandler(async (req, res) => {
         await schedule.updateOne({ $inc: { price: 15 } }, { new: true });
       }
 
+      //messaging client
+      client.messages
+        .create({
+          body: `Gomes Daycare: check-out confirmation date: ${req.body.end} time: ${times} ${late}`,
+          from: "+12515128063",
+          to: `${clients.phoneNumber}`,
+        })
+        .then((message) => console.log(message.sid))
+        .catch((err) => console.log(err));
       res.status(200).json(lastCheckedInTime);
     }
   } catch (error) {
@@ -314,17 +384,50 @@ const getBalance = asyncHandler(async (req, res) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        const currentDate = new Date()
+        let currentDate = new Date();
+        const time = currentDate
+          .toLocaleString("en-US", {
+            timeZone: "America/Los_Angeles",
+          })
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+
+        const date2 = new Date(time)
           .toISOString()
           .slice(0, 10)
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        const blockUserOnDueDate = currentDate === date1;
+        const blockUserOnDueDate = date2 === date1;
         unblockUserValues.push(blockUserOnDueDate);
 
         if (blockUserOnDueDate === true) {
           isUserBlocked = true;
+        }
+
+        const warningDate = new Date(p.dueDate);
+        warningDate.setDate(warningDate.getDate() - 5);
+
+        const date3Warning = new Date(warningDate)
+          .toISOString()
+          .slice(0, 10)
+          .replace(/T/, " ")
+          .replace(/\..+/, "");
+const fake = '2023-02-07'
+
+let alloweMessage = true
+
+        if (date3Warning === fake && alloweMessage) {
+          //messaging client 5 days before account gets block for lack of payment
+          client.messages
+            .create({
+              body: `GOMES DAYCRE: ${user.name} you have a pending balance of $${unpaidBalance} for the past 10 days, in five days you won't be able to create a schedule, or to do the check in at the day care until the payment is done.`,
+              from: "+12515128063",
+              to: `${user.phoneNumber}`,
+            })
+            .then((message) => console.log(message.sid))
+            .catch((err) => console.log(err));
         }
       }
     });

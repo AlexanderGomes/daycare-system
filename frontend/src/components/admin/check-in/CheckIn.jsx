@@ -6,17 +6,16 @@ import "./CheckIn.css";
 
 //TODO-- mark client as late, add it to the user schema
 
-
 const CheckIn = ({ data }) => {
   const [users, setUsers] = useState([]);
 
-  const date1 = new Date()
-  .toISOString()
-  .slice(0, 10)
-  .replace(/T/, " ")
-  .replace(/\..+/, "");
-  
-  
+
+  let currentDate = new Date();
+  const time = currentDate
+    .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    .slice(0, 8);
+
+
   const { user } = useSelector((state) => state.auth);
 
   const checkOut = async () => {
@@ -24,7 +23,7 @@ const CheckIn = ({ data }) => {
       await axios.put("/api/schedule/checkout", {
         userId: user._id,
         clientId: data._id,
-        end: date1,
+        end: time,
       });
       toast.success("Check-out done", {
         duration: 1500,
@@ -42,7 +41,9 @@ const CheckIn = ({ data }) => {
       {data.isCheckIn === true && data.isAdmin === false ? (
         <div className="client__color">
           <p className="client__name">{data.name}</p>
-          <button className="check__btn" onClick={checkOut}>Check-out</button>
+          <button className="check__btn" onClick={checkOut}>
+            Check-out
+          </button>
           <p className="client__email">{data.email}</p>
           <div className="client__balance">
             <p className="client__paid">

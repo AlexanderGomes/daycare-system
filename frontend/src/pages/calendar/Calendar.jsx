@@ -133,7 +133,19 @@ const Calendar = ({ data }) => {
     }
   });
 
+  // useEffect(() => {
+  
+  //     const fetchUser = async () => {
+  //       const res = await axios.get(
+  //         `/api/schedule/payment/user/balance/${user._id}`
+  //       );
+  //     };
 
+  //     fetchUser();
+    
+  // }, []);
+
+ 
 
   return (
     <div className="calendar__color">

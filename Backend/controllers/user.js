@@ -9,7 +9,7 @@ const dbConnect = require("../utils/dbConnect");
 dbConnect();
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, code } = req.body;
+  const { name, email, password, code, phoneNumber } = req.body;
 
   if (!name || !email || !password || !code) {
     return res.status(400).json({ msg: "Please enter all fields" });
@@ -33,6 +33,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
+    phoneNumber,
     password: hashedPassword,
   });
 
@@ -41,6 +42,7 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
+      phoneNumber: user.phoneNumber,
       token: generateToken(user._id),
     });
   } else {

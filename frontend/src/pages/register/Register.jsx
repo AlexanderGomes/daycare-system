@@ -28,6 +28,7 @@ const Register = () => {
       email: "",
       password: "",
       password2: "",
+      phone: "",
     },
     validationSchema: Yup.object({
       name: Yup.string()
@@ -42,6 +43,7 @@ const Register = () => {
         .required("Password Required")
         .oneOf([Yup.ref("password"), null], "Passwords don't match"),
       code: Yup.string().required("district code is required"),
+      phone: Yup.string().required("phone number is required"),
     }),
     onSubmit: (values) => {
       const userData = {
@@ -49,13 +51,13 @@ const Register = () => {
         email: values.email,
         password: values.password,
         code: values.code,
+        phoneNumber: values.phone,
       };
       dispatch(register(userData));
     },
   });
 
   useEffect(() => {
-
     if (formik.errors.email) {
       setTakenEmail(false);
     }
@@ -66,14 +68,13 @@ const Register = () => {
     if (isError && message === emailTaken) {
       setTakenEmail(true);
     }
-    
+
     if (isError && message === wrongCodeError) {
       setWrongCode(true);
     }
     if (isSuccess || user) {
       navigate("/calendar");
     }
-
 
     dispatch(reset());
   }, [user, isError, isSuccess, message, formik]);
@@ -168,13 +169,26 @@ const Register = () => {
                 value={formik.values.code}
                 onChange={formik.handleChange}
               />
-              {wrongCode === true ? (
-                <p className="error">Wrong code</p>
+              {wrongCode === true ? <p className="error">Wrong code</p> : ""}
+              {formik.touched.code && formik.errors.code ? (
+                <p className="error">{formik.errors.code}</p>
               ) : (
                 ""
               )}
-              {formik.touched.code && formik.errors.code ? (
-                <p className="error">{formik.errors.code}</p>
+
+              <input
+                className="input"
+                id="phone"
+                name="phone"
+                type="tel"
+                placeholder="+1 510 640 3402"
+                onBlur={formik.handleBlur}
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+              />
+
+              {formik.touched.phone && formik.errors.phone ? (
+                <p className="error">{formik.errors.phone}</p>
               ) : (
                 ""
               )}

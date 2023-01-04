@@ -71,6 +71,12 @@ const Client = ({ data }) => {
     setConf(!false);
   }, [conf]);
 
+  let currentDates = new Date();
+  const times = currentDates
+    .toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
+    .slice(10, 20);
+
+
   return (
     <div className="client__main">
       {data.isAdmin === false && popUp === true ? (
@@ -115,7 +121,9 @@ const Client = ({ data }) => {
               Check-in
             </button>
           ) : (
-            <p className="client__unpaid">user is blocked!! pending balance of 15 days</p>
+            <p className="client__unpaid">
+              user is blocked!! pending balance of 15 days
+            </p>
           )}
           <p className="client__email">{data.email}</p>
           <div className="client__balance">

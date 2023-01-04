@@ -21,7 +21,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { setIn } from "formik";
+
 
 function App() {
   const [data, setData] = useState([]);
@@ -45,19 +45,7 @@ function App() {
 
   UserById();
 
-  useEffect(() => {
-    if (user) {
-      const fetchUser = async () => {
-        const res = await axios.get(
-          `/api/schedule/payment/user/balance/${user._id}`
-        );
-        setInfo(res.data);
-      };
-
-      fetchUser();
-    }
-  }, [user]);
-
+ 
 
   const ProtectedRoute = ({ children }) => {
     if (data.isAdmin === false) {
