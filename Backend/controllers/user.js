@@ -1,10 +1,12 @@
 const User = require("../models/user");
 const Code = require("../models/code");
-
+const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
-
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const client = require("twilio")(accountSid, authToken);
 const dbConnect = require("../utils/dbConnect");
 dbConnect();
 
@@ -43,7 +45,6 @@ const registerUser = asyncHandler(async (req, res) => {
       name: user.name,
       email: user.email,
       phoneNumber: user.phoneNumber,
-      token: generateToken(user._id),
     });
   } else {
     res.status(400).json("invalid user data");
@@ -73,7 +74,6 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user.id,
       name: user.name,
       email: user.email,
-      token: generateToken(user._id),
     });
   }
 });
@@ -133,11 +133,97 @@ const getAllUsers = asyncHandler(async (req, res) => {
   }
 });
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT__SECRET, {
-    expiresIn: "30d",
+//EMAIL VERIFICATION
+let allCodes = [];
+const sendCodeToUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  const random = Math.floor(Math.random() * 9000 + 1000);
+  allCodes.push(random);
+
+  const lastCode = allCodes[allCodes.length - 1];
+
+  //sending code to client email email
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: "gomesdaycare@gmail.com",
+      pass: "yjsjmqgurignwmbd",
+    },
   });
-};
+
+  let info = await transporter.sendMail({
+    from: '"Gomes Daycare" <gomesdaycare@gmail.com>', // sender address
+    to: `${user.email}`, // list of receivers
+    subject: "verification code", // Subject line
+    text: `verification code: ${lastCode}`,
+  });
+
+  res.status(200).json(info);
+  try {
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//EMAIL VERIFICATION
+const confirmCode = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  const { code } = req.body;
+
+  try {
+    if (code === allCodes[allCodes.length - 1]) {
+      await user.updateOne({ $set: { isEmailVerified: true } });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//PHONE VERIFICAITON
+let phoneCodes = [];
+const sendPhoneCode = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  const random = Math.floor(Math.random() * 9000 + 1000);
+  phoneCodes.push(random);
+
+  const lastCode = phoneCodes[phoneCodes.length - 1];
+
+  try {
+    client.messages
+      .create({
+        body: `GOMES DAYCARE -- confirmation code: ${lastCode} `,
+        from: "+12515128063",
+        to: `${user.phoneNumber}`,
+      })
+      .then((message) => console.log(message.sid))
+      .catch((err) => console.log(err));
+    res.status(200).json({ msg: "phone code was sent" });
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
+
+//PHONE VERIFICATION
+const confirmPhoneCode = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+  const { code } = req.body;
+
+  try {
+    if (code === phoneCodes[phoneCodes.length - 1]) {
+      await user.updateOne({ $set: { isPhoneVerified: true } });
+      res.status(200).json({ msg: "user's phone number verified" });
+    } else {
+      res.status(430).send({ msg: "wrong code, try again" });
+    }
+  } catch (error) {
+    res.status(400).json(error.message);
+  }
+});
 
 module.exports = {
   registerUser,
@@ -145,5 +231,10 @@ module.exports = {
   AdminCreateCode,
   createAdmin,
   userById,
-  getAllUsers
+  getAllUsers,
+  sendCodeToUser,
+  confirmCode,
+  confirmCode,
+  sendPhoneCode,
+  confirmPhoneCode,
 };

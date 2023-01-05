@@ -6,6 +6,7 @@ export {default as History} from './history/History'
 export {default as Checkout} from './checkout/Checkout'
 export {default as Dash} from './admin/dashboard/Dash'
 export {default as AdminHistory} from './admin/adminHistory/AdminHistory'
+export {default as Profile} from './profile/Profile'
 
 
 

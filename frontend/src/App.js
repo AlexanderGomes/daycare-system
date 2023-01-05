@@ -11,6 +11,7 @@ import {
   Checkout,
   Dash,
   AdminHistory,
+  Profile,
 } from "./pages";
 import { Navbar, Footer, AdminNavbar } from "./components";
 import "./App.css";
@@ -68,6 +69,10 @@ function App() {
           <Route
             path="/"
             element={user ? <Calendar data={data} /> : <Welcome />}
+          />
+          <Route
+            path="/profile"
+            element={user ? <Profile data={data} /> : <Welcome />}
           />
           <Route
             path="/checkout"

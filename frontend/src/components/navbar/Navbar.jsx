@@ -33,17 +33,24 @@ const Navbar = () => {
               <span className="navbar__pay color">Checkout</span>
             </Link>
           </li>
+          <li>
+            <Link style={{ textDecoration: "none" }} to={"/profile"}>
+              <span className="navbar__pay color">Profile</span>
+            </Link>
+          </li>
         </ul>
       </div>
 
       <div className="toggle__nav">
-        <GiHamburgerMenu onClick={() => setToggle(true)} className='close__icon' />
+        <GiHamburgerMenu
+          onClick={() => setToggle(true)}
+          className="close__icon"
+        />
         {toggle && (
           <div className="toggle__color">
             <div className="toggle__main">
               <div className="toggle__top">
                 <p className="slogan__toggle">Gomes Daycare</p>
-
                 <AiFillCloseCircle onClick={close} className="close__icon " />
               </div>
               <div className="toggle__icons">
@@ -64,13 +71,23 @@ const Navbar = () => {
                       <span className="navbar__history color" onClick={close}>
                         History
                         <p className="toggle__details">
-                          see all your schedules, the one's that are paid for
-                          already and the ones that are due...
+                          see all your schedules, the one's that are paid for,
+                          and the ones that are due
                         </p>
                       </span>
                     </Link>
                   </li>
-                 
+                  <li>
+                    <Link style={{ textDecoration: "none" }} to={"/profile"}>
+                      <span className="navbar__history color" onClick={close}>
+                        Profile
+                        <p className="toggle__details">
+                          see all your personal information, confirm your email
+                          and phone number...
+                        </p>
+                      </span>
+                    </Link>
+                  </li>
                   <li>
                     <Link style={{ textDecoration: "none" }} to={"/checkout"}>
                       <span className="navbar__pay color" onClick={close}>
