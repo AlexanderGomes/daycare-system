@@ -38,6 +38,11 @@
   align-items: center;
   flex-direction: column;
   margin-top: 20px;
+  background-color: rgb(14, 128, 128);
+  border-radius: 12px;
+  min-width: 300px;
+  padding: 10px;
+  color: white;
 }
 
 .profile__balance__p {
@@ -54,16 +59,21 @@
 }
 
 .profile__top__info {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-direction: column;
   font-size: 18px;
+  margin-left: -30px;
   font-weight: 600;
 }
 
 .balance__paid {
-  color: green;
+color: black;
 }
 
 .balance__unpaid {
-  color: red;
+color: black;
 }
 
 .profile__email {
@@ -72,26 +82,61 @@
   gap: 5px;
 }
 
-
 .profile__email__main {
-    margin-top: 20px;
-    margin-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .code__btn {
- border-radius: 12px;
-background-color: aquamarine;
-cursor: pointer;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  background-color: aquamarine;
+  cursor: pointer;
 }
 
 .profile__name {
-    text-transform: capitalize;
+  text-transform: capitalize;
 }
 
 .profile__logout {
-    border-radius: 12px;
-    background-color: rgb(154, 42, 42);
-    color: white;
-    cursor: pointer;
+  border-radius: 12px;
+  background-color: rgb(154, 42, 42);
+  color: white;
+  cursor: pointer;
+}
+
+.inputs__profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  left: -10px;
+  top: -15px;
+}
+
+.error__profile {
+  color: red;
+  position: relative;
+  top: -50px;
+  left: -30px;
+}
+
+.confirm__code {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  background-color: aquamarine;
+  cursor: pointer;
+  position: relative;
+  left: -60px;
+  top: -40px;
+}
+
+.verified {
+  color: black;
+  font-weight: 900;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }

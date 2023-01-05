@@ -95,7 +95,7 @@ const Calendar = ({ data }) => {
           dueDate: dueDate,
         });
       }
-      await axios.get(`/api/schedule/payment/user/balance/${user._id}`)
+      await axios.get(`/api/schedule/payment/user/balance/${user._id}`);
       toast.success("Schedule Created", {
         duration: 3000,
       });
@@ -172,7 +172,8 @@ const Calendar = ({ data }) => {
 
       {data.isAdmin === false ? (
         <div className="calendar__main">
-          {data.isBlocked === false ? (
+          {data.isBlocked === false &&
+          (data.isPhoneVerified === true && data.isEmailVerified === true) ? (
             <div className="calendar__move">
               <span className="calendar__range">{`${format(
                 date[0].startDate,
@@ -199,22 +200,45 @@ const Calendar = ({ data }) => {
               {popUpDebt === true && (
                 <div className="calendar__popup__color move">
                   <div className="calendar__popup__main">
-                    <p className="calendar__p greyish">
-                      <span className="calendar__disclaimer">
-                        {" "}
-                        Disclaimer:{" "}
-                      </span>{" "}
-                      One of your schedules wasn't paid for at least 15 days,
-                      you're not allowed to make schedules until you pay your
-                      pending balance.
-                    </p>
+                    {data.isEmailVerified === false &&
+                    data.isPhoneVerified === false ? (
+                      <p className="calendar__p greyish">
+                        <span className="calendar__disclaimer">
+                          {" "}
+                          Disclaimer:{" "}
+                        </span>{" "}
+                        please verify your email and phone number to active your
+                        account!!
+                      </p>
+                    ) : (
+                      <p className="calendar__p greyish">
+                        <span className="calendar__disclaimer">
+                          {" "}
+                          Disclaimer:{" "}
+                        </span>{" "}
+                        One of your schedules wasn't paid for at least 15 days,
+                        you're not allowed to make schedules until you pay your
+                        pending balance.
+                      </p>
+                    )}
+
                     <div className="calendar__btns">
-                      <Link to={"/checkout"}>
+                      <Link
+                        to={
+                          data.isEmailVerified === false &&
+                          data.isPhoneVerified === false
+                            ? "/profile"
+                            : "/checkout"
+                        }
+                      >
                         <button
                           className="refuse__btn__checkout"
                           onClick={() => setPopUpDebt(false)}
                         >
-                          Checkout
+                          {data.isEmailVerified === false &&
+                          data.isPhoneVerified === false
+                            ? "Profile"
+                            : "Checkout"}
                         </button>
                       </Link>
                     </div>

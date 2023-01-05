@@ -47,15 +47,7 @@ const Checkout = () => {
 
   return (
     <div className="check__main">
-      <div className="check__info">
-        <p className="check__explanation">
-          All unpaid schedules will be displayed below for confirmation, if
-          there's any error please contact the daycare so we can solve the
-          issue. Be aware that we have payment plans for clients going through a
-          hard time, here we don't see you as an asset but as a human being,
-          we're going to help you on everything we can.
-        </p>
-      </div>
+    
       <div className="check__schedules">
         <p className="check__total">Total price: $ {price ? price : 0}</p>
 

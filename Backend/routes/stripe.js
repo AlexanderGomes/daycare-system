@@ -106,6 +106,7 @@ const fulfillOrder = async () => {
   });
 
   userInfo = [];
+  result = [];
 };
 
 router.post(

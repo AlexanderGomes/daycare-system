@@ -149,13 +149,13 @@ const sendCodeToUser = asyncHandler(async (req, res) => {
     port: 587,
     secure: false,
     auth: {
-      user: "gomesdaycare@gmail.com",
-      pass: "yjsjmqgurignwmbd",
+      user: "sander.alex0909@gmail.com",
+      pass: "ukwnrwylaeurxybz",
     },
   });
 
   let info = await transporter.sendMail({
-    from: '"Gomes Daycare" <gomesdaycare@gmail.com>', // sender address
+    from: '"Gomes Daycare" <sander.alex0909@gmail.com>', // sender address
     to: `${user.email}`, // list of receivers
     subject: "verification code", // Subject line
     text: `verification code: ${lastCode}`,
@@ -176,6 +176,8 @@ const confirmCode = asyncHandler(async (req, res) => {
   try {
     if (code === allCodes[allCodes.length - 1]) {
       await user.updateOne({ $set: { isEmailVerified: true } });
+    } else {
+      res.status(392).send({msg: 'wrong code'})
     }
     res.status(200).json(user);
   } catch (error) {
