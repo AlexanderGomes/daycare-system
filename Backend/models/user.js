@@ -18,7 +18,8 @@ const userSchema = mongoose.Schema(
       required: [true, "Please add your password"],
     },
     code: {
-      type: String,
+      type: Array,
+      default: [],
     },
     isAdmin: {
       type: Boolean,
@@ -29,10 +30,6 @@ const userSchema = mongoose.Schema(
       default: [],
     },
     unpaidBalance: {
-      type: Array,
-      default: [],
-    },
-    pending: {
       type: Array,
       default: [],
     },

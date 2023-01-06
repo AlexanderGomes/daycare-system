@@ -121,7 +121,7 @@ const userById = asyncHandler(async (req, res) => {
     if (user !== null) {
       res.status(201).json(user);
     } else {
-      res.status(302).send({msg: 'user does not exist'})
+      res.status(302).send({ msg: "user does not exist" });
     }
   } catch (error) {
     res.status(400).json(error.message);
@@ -138,14 +138,12 @@ const getAllUsers = asyncHandler(async (req, res) => {
 });
 
 //EMAIL VERIFICATION
-let allCodes = [];
+
 const sendCodeToUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   const random = Math.floor(Math.random() * 9000 + 1000);
-  allCodes.push(random);
-
-  const lastCode = allCodes[allCodes.length - 1];
+  await user.updateOne({ $push: { code: random } });
 
   //sending code to client email email
   let transporter = nodemailer.createTransport({
@@ -162,7 +160,7 @@ const sendCodeToUser = asyncHandler(async (req, res) => {
     from: '"Gomes Daycare" <sander.alex0909@gmail.com>', // sender address
     to: `${user.email}`, // list of receivers
     subject: "verification code", // Subject line
-    text: `verification code: ${lastCode}`,
+    text: `verification code: ${random}`,
   });
 
   res.status(200).json(info);
@@ -179,8 +177,8 @@ const confirmCode = asyncHandler(async (req, res) => {
 
   let isVerified = false;
 
-  for (let i = 0; i < allCodes.length; i++) {
-    const value = allCodes[i];
+  for (let i = 0; i < user.code.length; i++) {
+    const value = user.code[i];
     if (code === value) {
       isVerified = true;
     }
@@ -189,6 +187,7 @@ const confirmCode = asyncHandler(async (req, res) => {
   try {
     if (isVerified === true) {
       await user.updateOne({ $set: { isEmailVerified: true } });
+      await user.updateOne({ $set: { code: [] } });
     } else {
       res.status(392).send({ msg: "wrong code" });
     }
@@ -199,19 +198,16 @@ const confirmCode = asyncHandler(async (req, res) => {
 });
 
 //PHONE VERIFICAITON
-let phoneCodes = [];
 const sendPhoneCode = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
 
   const random = Math.floor(Math.random() * 9000 + 1000);
-  phoneCodes.push(random);
-
-  const lastCode = phoneCodes[phoneCodes.length - 1];
+  await user.updateOne({ $push: { code: random } });
 
   try {
     client.messages
       .create({
-        body: `GOMES DAYCARE -- confirmation code: ${lastCode} `,
+        body: `GOMES DAYCARE -- confirmation code: ${random} `,
         from: "+12515128063",
         to: `${user.phoneNumber}`,
       })
@@ -230,8 +226,8 @@ const confirmPhoneCode = asyncHandler(async (req, res) => {
 
   let isVerified = false;
 
-  for (let i = 0; i < phoneCodes.length; i++) {
-    const value = phoneCodes[i];
+  for (let i = 0; i < user.code.length; i++) {
+    const value = user.code[i];
     if (code === value) {
       isVerified = true;
     }
@@ -241,6 +237,7 @@ const confirmPhoneCode = asyncHandler(async (req, res) => {
     if (isVerified === true) {
       await user.updateOne({ $set: { isPhoneVerified: true } });
       res.status(200).json({ msg: "user's phone number verified" });
+      await user.updateOne({ $set: { code: [] } });
     } else {
       res.status(430).send({ msg: "wrong code, try again" });
     }

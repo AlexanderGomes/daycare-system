@@ -403,6 +403,7 @@ const getBalance = asyncHandler(async (req, res) => {
 
         const blockUserOnDueDate = date2 === date1;
         unblockUserValues.push(blockUserOnDueDate);
+        console.log(date1);
 
         if (blockUserOnDueDate === true) {
           isUserBlocked = true;
@@ -417,9 +418,6 @@ const getBalance = asyncHandler(async (req, res) => {
           .replace(/T/, " ")
           .replace(/\..+/, "");
 
-        revenue = paidBalance.reduce((a, b) => a + b, 0);
-        unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
-
         if (date3Warning === date2) {
           //messaging client 5 days before account gets block for lack of payment
           client.messages
@@ -433,6 +431,9 @@ const getBalance = asyncHandler(async (req, res) => {
         }
       }
     });
+
+    revenue = paidBalance.reduce((a, b) => a + b, 0);
+    unpaid = unpaidBalance.reduce((a, b) => a + b, 0);
 
     if (isUserBlocked === true) {
       client.messages

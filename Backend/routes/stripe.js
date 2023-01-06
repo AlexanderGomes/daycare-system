@@ -1,4 +1,3 @@
-const { compareSync } = require("bcryptjs");
 const express = require("express");
 const Schedule = require("../models/schedule");
 const User = require("../models/user");
@@ -34,8 +33,8 @@ router.post("/create-checkout-session", async (req, res) => {
           name: "Gomes Daycare",
           description: `schedule from ${date1} to ${date2}`,
           metadata: {
-            schedule_id: item._id,
-            user_id: item.user_id,
+            schedule_id: `${item._id}`,
+            user_id: `${item.userId}`,
           },
         },
         unit_amount: item.price * 100,
@@ -44,12 +43,18 @@ router.post("/create-checkout-session", async (req, res) => {
     };
   });
 
-  const abc = [];
+  const schedule = [];
   line_items.map((p) => {
-    abc.push(p.price_data.product_data.metadata.schedule_id);
+    schedule.push(p.price_data.product_data.metadata.schedule_id);
+  });
+  const string = schedule.toString().replaceAll(",", "");
+
+  const userIds = [];
+  line_items.map((p) => {
+    userIds.push(p.price_data.product_data.metadata.user_id);
   });
 
-  const string = abc.toString();
+  const string2 = userIds.toString().replaceAll(",", "");
 
   const session = await stripe.checkout.sessions.create({
     phone_number_collection: {
@@ -58,6 +63,7 @@ router.post("/create-checkout-session", async (req, res) => {
 
     metadata: {
       schedules_id: string,
+      user_id: string2,
     },
 
     line_items,
@@ -71,43 +77,50 @@ router.post("/create-checkout-session", async (req, res) => {
 });
 
 const fulfillOrder = async (data) => {
-  const a = data.metadata.schedules_id;
- const arr = Array.from(a)
- console.log(arr.length)
-  //length of id
+  const scheduleId = data.metadata.schedules_id;
+  const userId = data.metadata.user_id;
 
-  // let currentDate = new Date();
-  // const time = currentDate
-  //   .toLocaleString("en-US", {
-  //     timeZone: "America/Los_Angeles",
-  //   })
-  //   .slice(0, 10)
-  //   .replace(/T/, " ")
-  //   .replace(/\..+/, "");
-  // const date2 = new Date(time)
-  //   .toISOString()
-  //   .slice(0, 10)
-  //   .replace(/T/, " ")
-  //   .replace(/\..+/, "");
-  // const user = await User.find({ _id: { $in: userInfo } });
-  // user.map((u) => {
-  //   client.messages
-  //     .create({
-  //       body: `payment done by client ${u.name}, date: ${date2}`,
-  //       from: "+12515128063",
-  //       to: `+15106305188`,
-  //     })
-  //     .then((message) => console.log(message.sid))
-  //     .catch((err) => console.log(err));
-  //   client.messages
-  //     .create({
-  //       body: `payment confirmation ${u.name}, date: ${date2}`,
-  //       from: "+12515128063",
-  //       to: `${u.phoneNumber}`,
-  //     })
-  //     .then((message) => console.log(message.sid))
-  //     .catch((err) => console.log(err));
-  // });
+  const arrUser = userId.match(/.{1,24}/g);
+  const arrSchedule = scheduleId.match(/.{1,24}/g);
+
+  await Schedule.updateMany(
+    { _id: { $in: arrSchedule } },
+    { $set: { isPaid: true } },
+    { multi: true }
+  );
+  const user = await User.find({ _id: { $in: arrUser } });
+
+  let currentDate = new Date();
+  const time = currentDate
+    .toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+    })
+    .slice(0, 10)
+    .replace(/T/, " ")
+    .replace(/\..+/, "");
+  const date2 = new Date(time)
+    .toISOString()
+    .slice(0, 10)
+    .replace(/T/, " ")
+    .replace(/\..+/, "");
+  user.map((u) => {
+    client.messages
+      .create({
+        body: `payment done by client ${u.name}, date: ${date2}`,
+        from: "+12515128063",
+        to: `+15106305188`,
+      })
+      .then((message) => console.log(message.sid))
+      .catch((err) => console.log(err));
+    client.messages
+      .create({
+        body: `payment confirmation ${u.name}, date: ${date2}`,
+        from: "+12515128063",
+        to: `${u.phoneNumber}`,
+      })
+      .then((message) => console.log(message.sid))
+      .catch((err) => console.log(err));
+  });
 };
 
 router.post(
