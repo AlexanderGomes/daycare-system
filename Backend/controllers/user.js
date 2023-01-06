@@ -118,7 +118,11 @@ const createAdmin = asyncHandler(async (req, res) => {
 const userById = asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    res.status(201).json(user);
+    if (user !== null) {
+      res.status(201).json(user);
+    } else {
+      res.status(302).send({msg: 'user does not exist'})
+    }
   } catch (error) {
     res.status(400).json(error.message);
   }
@@ -173,11 +177,20 @@ const confirmCode = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   const { code } = req.body;
 
+  let isVerified = false;
+
+  for (let i = 0; i < allCodes.length; i++) {
+    const value = allCodes[i];
+    if (code === value) {
+      isVerified = true;
+    }
+  }
+
   try {
-    if (code === allCodes[allCodes.length - 1]) {
+    if (isVerified === true) {
       await user.updateOne({ $set: { isEmailVerified: true } });
     } else {
-      res.status(392).send({msg: 'wrong code'})
+      res.status(392).send({ msg: "wrong code" });
     }
     res.status(200).json(user);
   } catch (error) {
@@ -215,8 +228,17 @@ const confirmPhoneCode = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   const { code } = req.body;
 
+  let isVerified = false;
+
+  for (let i = 0; i < phoneCodes.length; i++) {
+    const value = phoneCodes[i];
+    if (code === value) {
+      isVerified = true;
+    }
+  }
+
   try {
-    if (code === phoneCodes[phoneCodes.length - 1]) {
+    if (isVerified === true) {
       await user.updateOne({ $set: { isPhoneVerified: true } });
       res.status(200).json({ msg: "user's phone number verified" });
     } else {

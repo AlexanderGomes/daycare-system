@@ -1,3 +1,4 @@
+const { compareSync } = require("bcryptjs");
 const express = require("express");
 const Schedule = require("../models/schedule");
 const User = require("../models/user");
@@ -8,10 +9,11 @@ require("dotenv").config();
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
 const client = require("twilio")(accountSid, authToken);
-let result = [];
-let userInfo = [];
 
 router.post("/create-checkout-session", async (req, res) => {
+  //current user
+
+  //data being passed down, all the schedules that are supposed to be paid
   const line_items = req.body.data.map((item) => {
     const date1 = new Date(item.start)
       .toISOString()
@@ -33,7 +35,7 @@ router.post("/create-checkout-session", async (req, res) => {
           description: `schedule from ${date1} to ${date2}`,
           metadata: {
             schedule_id: item._id,
-            user_id: item.userId,
+            user_id: item.user_id,
           },
         },
         unit_amount: item.price * 100,
@@ -42,14 +44,20 @@ router.post("/create-checkout-session", async (req, res) => {
     };
   });
 
-  line_items?.map((p) => {
-    result.push(p.price_data.product_data.metadata.schedule_id);
-    userInfo.push(p.price_data.product_data.metadata.user_id);
+  const abc = [];
+  line_items.map((p) => {
+    abc.push(p.price_data.product_data.metadata.schedule_id);
   });
+
+  const string = abc.toString();
 
   const session = await stripe.checkout.sessions.create({
     phone_number_collection: {
       enabled: true,
+    },
+
+    metadata: {
+      schedules_id: string,
     },
 
     line_items,
@@ -62,51 +70,44 @@ router.post("/create-checkout-session", async (req, res) => {
   res.send({ url: session.url });
 });
 
-const fulfillOrder = async () => {
-  await Schedule.updateMany(
-    { _id: { $in: result } },
-    { $set: { isPaid: true } },
-    { multi: true }
-  );
-  const user = await User.find({ _id: { $in: userInfo } });
+const fulfillOrder = async (data) => {
+  const a = data.metadata.schedules_id;
+ const arr = Array.from(a)
+ console.log(arr.length)
+  //length of id
 
-  let currentDate = new Date();
-  const time = currentDate
-    .toLocaleString("en-US", {
-      timeZone: "America/Los_Angeles",
-    })
-    .slice(0, 10)
-    .replace(/T/, " ")
-    .replace(/\..+/, "");
-
-  const date2 = new Date(time)
-    .toISOString()
-    .slice(0, 10)
-    .replace(/T/, " ")
-    .replace(/\..+/, "");
-
-  user.map((u) => {
-    client.messages
-      .create({
-        body: `payment done by client ${u.name}, date: ${date2}`,
-        from: "+12515128063",
-        to: `+15106305188`,
-      })
-      .then((message) => console.log(message.sid))
-      .catch((err) => console.log(err));
-
-    client.messages
-      .create({
-        body: `payment confirmation ${u.name}, date: ${date2}`,
-        from: "+12515128063",
-        to: `${u.phoneNumber}`,
-      })
-      .then((message) => console.log(message.sid))
-      .catch((err) => console.log(err));
-  });
-
-  userInfo = [];
-  result = [];
+  // let currentDate = new Date();
+  // const time = currentDate
+  //   .toLocaleString("en-US", {
+  //     timeZone: "America/Los_Angeles",
+  //   })
+  //   .slice(0, 10)
+  //   .replace(/T/, " ")
+  //   .replace(/\..+/, "");
+  // const date2 = new Date(time)
+  //   .toISOString()
+  //   .slice(0, 10)
+  //   .replace(/T/, " ")
+  //   .replace(/\..+/, "");
+  // const user = await User.find({ _id: { $in: userInfo } });
+  // user.map((u) => {
+  //   client.messages
+  //     .create({
+  //       body: `payment done by client ${u.name}, date: ${date2}`,
+  //       from: "+12515128063",
+  //       to: `+15106305188`,
+  //     })
+  //     .then((message) => console.log(message.sid))
+  //     .catch((err) => console.log(err));
+  //   client.messages
+  //     .create({
+  //       body: `payment confirmation ${u.name}, date: ${date2}`,
+  //       from: "+12515128063",
+  //       to: `${u.phoneNumber}`,
+  //     })
+  //     .then((message) => console.log(message.sid))
+  //     .catch((err) => console.log(err));
+  // });
 };
 
 router.post(
@@ -116,12 +117,9 @@ router.post(
     let data;
     let eventType;
 
-    // Check if webhook signing is configured.
     let webhookSecret = process.env.WEBHOOK;
-    //webhookSecret = process.env.STRIPE_WEB_HOOK;
 
     if (webhookSecret) {
-      // Retrieve the event by verifying the signature using the raw body and secret.
       let event;
       let signature = req.headers["stripe-signature"];
 
@@ -135,22 +133,20 @@ router.post(
         console.log(`⚠️  Webhook signature verification failed:  ${err}`);
         return res.sendStatus(400);
       }
-      // Extract the object from the event.
+
       data = event.data.object;
       eventType = event.type;
     } else {
-      // Webhook signing is recommended, but if the secret is not configured in `config.js`,
-      // retrieve the event data directly from the request body.
       data = req.body.data.object;
       eventType = req.body.type;
     }
 
-    // Handle the checkout.session.completed event
     if (eventType === "checkout.session.completed") {
-      fulfillOrder();
+      fulfillOrder(data);
     }
 
     res.status(200).end();
   }
 );
+
 module.exports = router;

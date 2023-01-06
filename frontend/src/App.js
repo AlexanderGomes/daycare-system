@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import { useDispatch } from "react-redux";
+import { logout, reset } from "./features/auth/authSlice";
 import "driver.js/dist/driver.min.css";
 import {
   Welcome,
@@ -28,6 +29,10 @@ function App() {
   const { user } = useSelector((state) => state.auth);
   const [info, setInfo] = useState([]);
 
+  const userNotFound = "Request failed with status code 302";
+
+  const dispatch = useDispatch();
+
   const UserById = async () => {
     useEffect(() => {
       if (user) {
@@ -37,7 +42,10 @@ function App() {
             setData(res.data);
           })
           .catch((error) => {
-            console.log(error.message);
+            if (error.message === userNotFound) {
+              dispatch(logout());
+              dispatch(reset());
+            }
           });
       }
     }, [user]);

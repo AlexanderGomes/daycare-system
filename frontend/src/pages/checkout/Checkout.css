@@ -48,8 +48,9 @@
 
 .check__total {
   font-size: 20px;
-  color: rgb(0, 0, 0);
+  color: rgb(161, 37, 37);
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  font-weight: 600;
 }
 
 .checkout__btn {
@@ -60,5 +61,5 @@
 .no__schedule {
   font-size: 20px;
   color: rgb(0, 0, 0);
+  font-weight: 600;
 }
-

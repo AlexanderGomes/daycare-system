@@ -1,11 +1,15 @@
 import React from "react";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const PaymentBtn = ({ data }) => {
+  const { user } = useSelector((state) => state.auth);
+
+  
 
   const HandleCart = async () => {
     axios
-      .post("/api/payment/create-checkout-session", {
+      .post(`/api/payment/create-checkout-session`, {
         data,
       })
       .then((response) => {
@@ -18,7 +22,9 @@ const PaymentBtn = ({ data }) => {
 
   return (
     <>
-      <button className="checkout__btn" onClick={() => HandleCart()}>PAYMENT</button>
+      <button className="checkout__btn" onClick={() => HandleCart()}>
+        PAYMENT
+      </button>
     </>
   );
 };

@@ -225,9 +225,7 @@ const checkOutUser = asyncHandler(async (req, res) => {
   const schedule = await Schedule.findOne({
     userId: clients._id,
     isAdmin: true,
-  }).sort({
-    _id: -1,
-  });
+  }).sort({ _id: -1 });
 
   const lastCheckedInTime = await CheckIn.findOne({
     clientId: clients._id,
