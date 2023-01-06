@@ -200,7 +200,7 @@ const Calendar = ({ data }) => {
               {popUpDebt === true && (
                 <div className="calendar__popup__color move">
                   <div className="calendar__popup__main">
-                    {data.isEmailVerified === false &&
+                    {data.isEmailVerified === false ||
                     data.isPhoneVerified === false ? (
                       <p className="calendar__p greyish">
                         <span className="calendar__disclaimer">

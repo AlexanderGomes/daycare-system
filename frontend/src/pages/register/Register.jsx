@@ -10,6 +10,7 @@ import "./Register.css";
 const Register = () => {
   const [takenEmail, setTakenEmail] = useState(false);
   const [wrongCode, setWrongCode] = useState(false);
+  const [wrongPhoneCode, setWrongPhoneCode] = useState(false);
 
   const { user, isError, isSuccess, message } = useSelector(
     (state) => state.auth
@@ -19,7 +20,8 @@ const Register = () => {
   const dispatch = useDispatch();
 
   const emailTaken = "Request failed with status code 400";
-  const wrongCodeError = "Request failed with status code 500";
+  const wrongCodeError = "Request failed with status code 420";
+  const wrongPhoneCodes = "Request failed with status code 433";
 
   const formik = useFormik({
     initialValues: {
@@ -67,6 +69,9 @@ const Register = () => {
 
     if (isError && message === emailTaken) {
       setTakenEmail(true);
+    }
+    if (isError && message === wrongPhoneCodes) {
+      setWrongPhoneCode(true);
     }
 
     if (isError && message === wrongCodeError) {
@@ -164,7 +169,7 @@ const Register = () => {
                 id="code"
                 name="code"
                 type="text"
-                placeholder="district code"
+                placeholder="registration code"
                 onBlur={formik.handleBlur}
                 value={formik.values.code}
                 onChange={formik.handleChange}
@@ -186,6 +191,11 @@ const Register = () => {
                 value={formik.values.phone}
                 onChange={formik.handleChange}
               />
+              {wrongPhoneCode === true ? (
+                <p className="error">phone number is Taken</p>
+              ) : (
+                ""
+              )}
 
               {formik.touched.phone && formik.errors.phone ? (
                 <p className="error">{formik.errors.phone}</p>

@@ -3,21 +3,24 @@
   justify-content: center;
   align-items: center;
   margin-top: 80px;
+  width: 100%;
 }
 
 .dash__nav__ul {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 50px;
+  gap: 20px;
   text-decoration: none;
   list-style: none;
   cursor: pointer;
-  width: 400px;
+  min-width: 280px;
+  min-height: 60px;
   background-color: rgb(15, 33, 33);
   border-radius: 12px;
-  padding: 5px;
-  font-size: 22px;
+  padding: 10px;
+  font-size: 19px;
   color: white;
 }
 

@@ -7,7 +7,10 @@ const codeSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     code: {
       type: String,
       required: true,

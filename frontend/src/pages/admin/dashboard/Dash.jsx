@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Client, CheckIn, Schedule } from "../../../components";
+import { Client, CheckIn, Schedule, Code } from "../../../components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,8 @@ const Dash = ({ data }) => {
   const [toggleClient, setToggleClient] = useState(true);
   const [toggleHistory, setToggleHistory] = useState(false);
   const [toggleSchedule, setToggleSchedule] = useState(false);
+  const [toggleCode, setToggleCode] = useState(false);
+
   const [search, setSearch] = useState("");
   const [search2, setSearch2] = useState("");
 
@@ -42,16 +44,26 @@ const Dash = ({ data }) => {
     setToggleClient(true);
     setToggleHistory(false);
     setToggleSchedule(false);
+    setToggleCode(false);
   };
 
   const handleHistory = () => {
     setToggleHistory(true);
     setToggleClient(false);
     setToggleSchedule(false);
+    setToggleCode(false);
   };
 
   const handleSchedule = () => {
     setToggleSchedule(true);
+    setToggleClient(false);
+    setToggleHistory(false);
+    setToggleCode(false);
+  };
+
+  const handleCode = () => {
+    setToggleCode(true);
+    setToggleSchedule(false);
     setToggleClient(false);
     setToggleHistory(false);
   };
@@ -79,6 +91,12 @@ const Dash = ({ data }) => {
                 onClick={handleSchedule}
               >
                 Schedule
+              </li>
+              <li
+                className={toggleCode === true ? "toggle__active" : ""}
+                onClick={handleCode}
+              >
+                Codes
               </li>
             </ul>
           </div>
@@ -149,6 +167,14 @@ const Dash = ({ data }) => {
             {toggleSchedule === true ? (
               <div className="toggle">
                 <Schedule />
+              </div>
+            ) : (
+              ""
+            )}
+
+            {toggleCode === true ? (
+              <div className="toggle">
+                <Code data ={data} />
               </div>
             ) : (
               ""

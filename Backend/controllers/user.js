@@ -25,8 +25,15 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   //TODO - handle error when code is not found on the db
-  if (code !== senha.code) {
-    return res.status(400).json({ msg: "user's code unavailable" });
+  if (!senha) {
+    return res.status(420).json({ msg: "user's code unavailable" });
+  }
+
+  const adminCode = 391920139;
+
+  const findUserPhone = await User.findOne({ phoneNumber });
+  if (findUserPhone) {
+    return res.status(433).json({ msg: "phone number is taken" });
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -38,6 +45,10 @@ const registerUser = asyncHandler(async (req, res) => {
     phoneNumber,
     password: hashedPassword,
   });
+
+  if (senha.code.startsWith(adminCode)) {
+    await user.updateOne({ $set: { isAdmin: true } });
+  }
 
   if (user) {
     res.status(201).json({
@@ -78,14 +89,19 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-const AdminCreateCode = asyncHandler(async (req, res) => {
-  const code = new Code(req.body);
+const CreateCodeUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.body.userId);
+
+  const randomCode = Math.floor(Math.random() * 9000 + 1000);
 
   if (user.isAdmin === true) {
     try {
-      const savedCode = await code.save();
-      res.status(200).json(savedCode);
+      const code = new Code({
+        userId: user,
+        code: randomCode,
+      });
+      await code.save();
+      res.status(200).json(code);
     } catch (error) {
       res.status(400).json(error.message);
     }
@@ -94,24 +110,27 @@ const AdminCreateCode = asyncHandler(async (req, res) => {
   }
 });
 
-const createAdmin = asyncHandler(async (req, res) => {
-  const currentUser = await User.findById(req.params.id);
-  const client = await User.findById(req.body.userId);
+const CreateAdminCodeUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.body.userId);
 
-  try {
-    if (currentUser.isAdmin === true) {
-      if (client.isAdmin === false) {
-        await client.updateOne({ $set: { isAdmin: true } });
-        res.status(200).json(client);
-      } else {
-        await client.updateOne({ $set: { isAdmin: false } });
-        res.status(200).json(client);
-      }
-    } else {
-      res.status(400).json({ msg: "user is not an admin" });
+  const randomCode = Math.floor(Math.random() * 9000 + 1000);
+  const adminCode = 391920139;
+  const string = `${adminCode}${randomCode}`;
+
+  if (user.isAdmin === true) {
+    try {
+      const code = new Code({
+        userId: user,
+        code: string,
+        isAdmin: true,
+      });
+      await code.save();
+      res.status(200).json(code);
+    } catch (error) {
+      res.status(400).json(error.message);
     }
-  } catch (error) {
-    res.status(400).json(error.message);
+  } else {
+    res.status(400).json({ msg: "user is not an admin" });
   }
 });
 
@@ -249,8 +268,7 @@ const confirmPhoneCode = asyncHandler(async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
-  AdminCreateCode,
-  createAdmin,
+  CreateCodeUser,
   userById,
   getAllUsers,
   sendCodeToUser,
@@ -258,4 +276,5 @@ module.exports = {
   confirmCode,
   sendPhoneCode,
   confirmPhoneCode,
+  CreateAdminCodeUser,
 };

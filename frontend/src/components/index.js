@@ -7,6 +7,8 @@ export {default as Client} from './admin/client/Client'
 export {default as CheckIn} from './admin/check-in/CheckIn'
 export {default as Lists} from './admin/check-in/Lists'
 export {default as Schedule} from './admin/schedule/Schedule'
+export {default as Code} from './admin/code/Code'
+
 
 
 

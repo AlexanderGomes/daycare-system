@@ -120,17 +120,13 @@ const checkInUser = asyncHandler(async (req, res) => {
   const checkInClient = new CheckIn(req.body);
   const adminUser = await User.findById(req.body.userId);
   const clients = await User.findById(req.body.clientId);
-  const clientHistory = await CheckIn.find({ clientId: client._id });
+  const clientHistory = await CheckIn.find({ clientId: clients._id });
   const ClientSchedule = await Schedule.find({ userId: req.body.clientId });
 
-  let compareClientHistory;
   let isTaken = false;
 
   clientHistory?.map((c) => {
-    compareClientHistory =
-      c.start.toString() === checkInClient.start.toString();
-
-    if (compareClientHistory === true) {
+    if (c.start.toString() === checkInClient.start.toString()) {
       isTaken = true;
     }
   });
@@ -197,15 +193,15 @@ const checkInUser = asyncHandler(async (req, res) => {
         });
         await order.save();
 
-        //messaging client
-        client.messages
-          .create({
-            body: `Gomes Daycare: check-in confirmation date: ${req.body.start}, time: ${times}`,
-            from: "+12515128063",
-            to: `${clients.phoneNumber}`,
-          })
-          .then((message) => console.log(message.sid))
-          .catch((err) => console.log(err));
+        // //messaging client
+        // client.messages
+        //   .create({
+        //     body: `Gomes Daycare: check-in confirmation date: ${req.body.start}, time: ${times}`,
+        //     from: "+12515128063",
+        //     to: `${clients.phoneNumber}`,
+        //   })
+        //   .then((message) => console.log(message.sid))
+        //   .catch((err) => console.log(err));
         res.status(200).json(savedClient);
       } else {
         res.status(420).send({ msg: "schedule is already done" });
