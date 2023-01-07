@@ -265,6 +265,7 @@ const confirmPhoneCode = asyncHandler(async (req, res) => {
   }
 });
 
+
 module.exports = {
   registerUser,
   loginUser,
