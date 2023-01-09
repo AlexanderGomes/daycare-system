@@ -45,9 +45,10 @@ const Checkout = () => {
     }
   });
 
+  //TODO- create a pop up to update the schedule info before actually paying it
+
   return (
     <div className="check__main">
-    
       <div className="check__schedules">
         <p className="check__total">Total price: $ {price ? price : 0}</p>
 

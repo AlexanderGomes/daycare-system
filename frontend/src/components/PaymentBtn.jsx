@@ -3,10 +3,6 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 
 const PaymentBtn = ({ data }) => {
-  const { user } = useSelector((state) => state.auth);
-
-  
-
   const HandleCart = async () => {
     axios
       .post(`/api/payment/create-checkout-session`, {
