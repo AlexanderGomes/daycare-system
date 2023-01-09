@@ -2,10 +2,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
   background-color: rgb(214, 214, 214);
   width: 200px;
   border-radius: 12px;
-  min-height: 50px;
   padding: 5px;
 }
 
@@ -31,8 +31,6 @@
   font-weight: 600;
 }
 
-
-
 .none {
   display: none;
 }
@@ -42,4 +40,11 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+}
+
+.a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
